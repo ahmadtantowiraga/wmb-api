@@ -1,7 +1,7 @@
 package com.enigma.wmb_api.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
+import jakarta.persistence.Table;
 import lombok.*;
 
 @Setter

@@ -1,21 +1,20 @@
 package com.enigma.wmb_api.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import lombok.*;
+
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="m_trans_type")
-public class TransactionType {
+@Table(name = "m_table")
+public class Tables {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name="description", columnDefinition = "VARCHAR(50)")
-    private String description;
-
+    @Column(name="table_name", columnDefinition = "VARCHAR(3)")
+    private String tableName;
 }
