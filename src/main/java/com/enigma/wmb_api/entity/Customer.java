@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.entity;
 
+import com.enigma.wmb_api.constant.ConstantTable;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="m_customer")
+@Table(name= ConstantTable.CUSTOMER_TABLE)
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,7 +23,5 @@ public class Customer {
     @Column(name="mobile_phone_no", columnDefinition = "VARCHAR(20)")
     private String mobilePhoneNo;
 
-    @Column(name="is_member")
-    private Boolean isMember;
 
 }

@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.entity;
 
+import com.enigma.wmb_api.constant.ConstantTable;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "m_table")
+@Table(name = ConstantTable.TRANSACTION_TABLE)
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,7 +33,7 @@ public class Transaction {
     private Tables tables;
 
     @ManyToOne
-    @JoinColumn(name = "transaction_type_id")
+    @JoinColumn(name = "transaction_type_id", nullable = false)
     private TransactionType transactionType;
 
     @OneToMany(mappedBy = "transaction")

@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.entity;
 
+import com.enigma.wmb_api.constant.ConstantTable;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -9,13 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="m_trans_type")
+@Table(name= ConstantTable.TRANSACTION_TYPE_TABLE)
 public class TransactionType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name="description", columnDefinition = "VARCHAR(50)")
+    @Column(name="description", nullable = false, columnDefinition = "VARCHAR(50)")
     private String description;
 
 }

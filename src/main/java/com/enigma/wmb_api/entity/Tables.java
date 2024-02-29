@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.entity;
 
+import com.enigma.wmb_api.constant.ConstantTable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,12 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "m_table")
+@Table(name = ConstantTable.MENU_TABLE)
 public class Tables {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name="table_name", columnDefinition = "VARCHAR(3)")
+    @Column(name="table_name", nullable = false, columnDefinition = "VARCHAR(3)")
     private String tableName;
 }
