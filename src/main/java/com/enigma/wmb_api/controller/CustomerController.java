@@ -52,7 +52,7 @@ public class CustomerController {
                 .totalElement(customers.getTotalElements())
                 .build();
         CommonResponse<List<Customer>> response=CommonResponse.<List<Customer>>builder()
-                .message("Succec Get All Product")
+                .message("Success Get All Product")
                 .statusCode(HttpStatus.OK.value())
                 .pagingResponse(pagingResponse)
                 .data(customers.getContent())
