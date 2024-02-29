@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.service.impl;
 
+import com.enigma.wmb_api.dto.request.NewCustomerRequest;
 import com.enigma.wmb_api.dto.request.SearchCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
@@ -20,7 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     @Override
-    public Customer create(Customer customer) {
+    public Customer create(NewCustomerRequest newCustomer) {
+
+        Customer customer=Customer.builder()
+                .customerName(newCustomer.getCustomerName())
+                .mobilePhoneNo(newCustomer.getMobilePhoneNo())
+                .build();
         return customerRepository.saveAndFlush(customer);
     }
 
