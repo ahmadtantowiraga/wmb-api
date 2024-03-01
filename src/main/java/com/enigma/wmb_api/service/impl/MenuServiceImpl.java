@@ -6,9 +6,17 @@ import com.enigma.wmb_api.dto.request.menu_request.UpdateMenuRequest;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
 import com.enigma.wmb_api.service.MenuService;
+import com.enigma.wmb_api.spesification.MenuSpesification;
 import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 @Service
@@ -20,26 +28,39 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu create(NewMenuRequest request) {
         validationUtil.validate(request);
-        return null;
+        Menu menu= Menu.builder()
+                .menuName(request.getMenuName())
+                .price(request.getPrice())
+                .build();
+        return menuRepository.saveAndFlush(menu);
     }
 
     @Override
     public Menu findById(String id) {
-        return null;
+        return menuRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id is not found"));
     }
 
     @Override
     public Menu update(UpdateMenuRequest request) {
-        return null;
+        findById(request.getId());
+        Menu menu= Menu.builder()
+                .menuName(request.getMenuName())
+                .price(request.getPrice())
+                .build();
+        return menuRepository.saveAndFlush(menu);
     }
 
     @Override
     public void deleteById(String id) {
-
+        findById(id);
+        menuRepository.deleteById(id);
     }
 
     @Override
-    public List<Menu> findAll(SearchMenuRequest request) {
-        return null;
+    public Page<Menu> findAll(SearchMenuRequest request) {
+        Specification<Menu> specification= MenuSpesification.getSpesification(request);
+        Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
+        Pageable pageable= PageRequest.of(request.getPage(), request.getSize(), sort);
+        return menuRepository.findAll(specification, pageable);
     }
 }
