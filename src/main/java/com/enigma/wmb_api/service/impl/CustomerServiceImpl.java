@@ -1,11 +1,13 @@
 package com.enigma.wmb_api.service.impl;
 
-import com.enigma.wmb_api.dto.request.NewCustomerRequest;
+import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
 import com.enigma.wmb_api.dto.request.SearchCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
 import com.enigma.wmb_api.spesification.CustomerSpesification;
+import com.enigma.wmb_api.util.ValidationUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,12 +22,15 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final ValidationUtil validationUtil;
     @Override
-    public Customer create(NewCustomerRequest newCustomer) {
-
+    @Transactional
+    public Customer update(UpdateCustomerRequest updateCustomer) {
+        validationUtil.validate(updateCustomer);
+        customerRepository.findById(updateCustomer.getId());
         Customer customer=Customer.builder()
-                .customerName(newCustomer.getCustomerName())
-                .mobilePhoneNo(newCustomer.getMobilePhoneNo())
+                .customerName(updateCustomer.getCustomerName())
+                .mobilePhoneNo(updateCustomer.getMobilePhoneNo())
                 .build();
         return customerRepository.saveAndFlush(customer);
     }

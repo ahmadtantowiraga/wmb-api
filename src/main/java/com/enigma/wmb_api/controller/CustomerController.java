@@ -1,6 +1,7 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.APIUrl;
+import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
 import com.enigma.wmb_api.dto.request.SearchCustomerRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
@@ -10,11 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.function.EntityResponse;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,7 +42,7 @@ public class CustomerController {
         Page<Customer> customers=customerService.findAll(request);
         PagingResponse pagingResponse=PagingResponse.builder()
                 .totalPages(customers.getTotalPages())
-                .page(customers.getPageable().getPageNumber())
+                .page(customers.getPageable().getPageNumber()+1)
                 .hasNext(customers.hasNext())
                 .hasPrevious(customers.hasPrevious())
                 .size(customers.getSize())
@@ -56,6 +53,39 @@ public class CustomerController {
                 .statusCode(HttpStatus.OK.value())
                 .pagingResponse(pagingResponse)
                 .data(customers.getContent())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<CommonResponse<Customer>> updateCustomer(@RequestBody UpdateCustomerRequest request){
+        Customer customer=customerService.update(request);
+        CommonResponse<Customer> commonResponse=CommonResponse.<Customer>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully Update Customer")
+                .data(customer)
+                .build();
+        return ResponseEntity.ok(commonResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResponse<Customer>> findById(@PathVariable(name="id") String id){
+        Customer customer=customerService.findById(id);
+        CommonResponse<Customer> response=CommonResponse.<Customer>builder()
+                .data(customer)
+                .message("Success Get Customer")
+                .statusCode(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
+        customerService.deleteById(id);
+        CommonResponse<String> response=CommonResponse.<String>builder()
+                .data("Ok")
+                .message("Success delete customer")
+                .statusCode(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(response);
     }
