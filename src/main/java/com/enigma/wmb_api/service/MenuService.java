@@ -1,8 +1,8 @@
 package com.enigma.wmb_api.service;
 
-import com.enigma.wmb_api.dto.request.NewMenuRequest;
-import com.enigma.wmb_api.dto.request.SearchMenuRequest;
-import com.enigma.wmb_api.dto.request.UpdateMenuRequest;
+import com.enigma.wmb_api.dto.request.menu_request.NewMenuRequest;
+import com.enigma.wmb_api.dto.request.menu_request.SearchMenuRequest;
+import com.enigma.wmb_api.dto.request.menu_request.UpdateMenuRequest;
 import com.enigma.wmb_api.entity.Menu;
 
 import java.util.List;

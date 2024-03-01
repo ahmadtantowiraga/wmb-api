@@ -1,7 +1,7 @@
 package com.enigma.wmb_api.service.impl;
 
-import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
-import com.enigma.wmb_api.dto.request.SearchCustomerRequest;
+import com.enigma.wmb_api.dto.request.customer_request.UpdateCustomerRequest;
+import com.enigma.wmb_api.dto.request.customer_request.SearchCustomerRequest;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;

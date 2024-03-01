@@ -1,8 +1,8 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.APIUrl;
-import com.enigma.wmb_api.dto.request.UpdateCustomerRequest;
-import com.enigma.wmb_api.dto.request.SearchCustomerRequest;
+import com.enigma.wmb_api.dto.request.customer_request.UpdateCustomerRequest;
+import com.enigma.wmb_api.dto.request.customer_request.SearchCustomerRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
 import com.enigma.wmb_api.entity.Customer;

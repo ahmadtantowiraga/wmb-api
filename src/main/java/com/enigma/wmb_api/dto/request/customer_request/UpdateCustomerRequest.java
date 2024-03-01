@@ -1,4 +1,4 @@
-package com.enigma.wmb_api.dto.request;
+package com.enigma.wmb_api.dto.request.customer_request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
