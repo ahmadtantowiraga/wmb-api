@@ -11,6 +11,5 @@ public interface CustomerService {
     Customer findById(String id);
     void deleteById(String id);
     Page<Customer> findAll(SearchCustomerRequest request);
-    Customer update(Customer customer);
 
 }

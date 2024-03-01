@@ -55,9 +55,4 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll(specification, pageable);
     }
 
-    @Override
-    public Customer update(Customer customer) {
-        Customer customerUpdate=findById(customer.getId());
-        return customerRepository.saveAndFlush(customerUpdate);
-    }
 }
