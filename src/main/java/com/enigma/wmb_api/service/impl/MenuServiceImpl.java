@@ -22,8 +22,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MenuServiceImpl implements MenuService {
-    private MenuRepository menuRepository;
-    private ValidationUtil validationUtil;
+    private final MenuRepository menuRepository;
+    private final ValidationUtil validationUtil;
 
     @Override
     public Menu create(NewMenuRequest request) {
@@ -58,9 +58,10 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Page<Menu> findAll(SearchMenuRequest request) {
+        if (request.getPage() <= 0) request.setPage(1);
         Specification<Menu> specification= MenuSpesification.getSpesification(request);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
-        Pageable pageable= PageRequest.of(request.getPage(), request.getSize(), sort);
+        Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
         return menuRepository.findAll(specification, pageable);
     }
 }
