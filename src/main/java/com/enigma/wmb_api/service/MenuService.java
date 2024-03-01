@@ -13,4 +13,5 @@ public interface MenuService {
     Menu update(UpdateMenuRequest request);
     void deleteById(String id);
     List<Menu> findAll(SearchMenuRequest request);
+
 }
