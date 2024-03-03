@@ -14,6 +14,6 @@ public class SearchTransactionDetailRequest {
     private String sortBy;
     private String transactionId;
     private String menuId;
-    private Integer stock;
+    private Integer qty;
     private Long price;
 }

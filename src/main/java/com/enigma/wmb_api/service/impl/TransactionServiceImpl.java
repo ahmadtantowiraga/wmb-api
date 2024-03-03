@@ -58,7 +58,7 @@ public class TransactionServiceImpl implements TransactionService {
                             .menu(menu)
                             .build();
                 }).toList();
-        List<TransactionDetail> transactionDetails=transactionDetailService.create(transactionDetail);
+        List<TransactionDetail> transactionDetails=transactionDetailService.createBulk(transactionDetail);
         transaction1.setTransactionDetail(transactionDetails);
         return transaction1;
     }
