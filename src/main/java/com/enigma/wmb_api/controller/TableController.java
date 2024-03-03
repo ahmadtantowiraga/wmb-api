@@ -10,8 +10,8 @@ import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
 import com.enigma.wmb_api.entity.Tables;
 
+import com.enigma.wmb_api.entity.TransactionType;
 import com.enigma.wmb_api.service.TableService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
+
 import java.util.List;
 
 @RestController
@@ -107,4 +107,5 @@ public class TableController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
 }

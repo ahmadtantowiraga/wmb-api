@@ -7,12 +7,12 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class NewTransactionTypeRequest {
-    @NotNull(message = "Transaction Type Id is Required")
+@NoArgsConstructor
+@AllArgsConstructor
+public class NewTransactionType {
+    @NotNull(message = "Id is Required")
     private TransactionTypeID id;
-    @NotBlank(message = "Description is Required")
+    @NotBlank(message = "description is required")
     private String description;
 }

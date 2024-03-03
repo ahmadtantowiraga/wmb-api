@@ -1,6 +1,7 @@
 package com.enigma.wmb_api.service.impl;
 
-import com.enigma.wmb_api.dto.request.transaction_type_request.NewTransactionTypeRequest;
+import com.enigma.wmb_api.dto.request.transaction_type_request.NewTransactionType;
+import com.enigma.wmb_api.dto.request.transaction_type_request.UpdateTransactionTypeRequest;
 import com.enigma.wmb_api.dto.request.transaction_type_request.SearchTransactionTypeRequest;
 import com.enigma.wmb_api.entity.TransactionType;
 import com.enigma.wmb_api.repository.TransactionTypeRepository;
@@ -28,7 +29,7 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     }
 
     @Override
-    public TransactionType update(NewTransactionTypeRequest request) {
+    public TransactionType update(UpdateTransactionTypeRequest request) {
         validationUtil.validate(request);
         findById(request.getId().name());
         TransactionType transactionType=TransactionType.builder()
@@ -48,8 +49,18 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     public Page<TransactionType> findAll(SearchTransactionTypeRequest request) {
         if (request.getPage()<1) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
-        Pageable pageable= PageRequest.of(request.getPage(), request.getSize(), sort);
+        Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
         Specification<TransactionType> specification= TransactionTypeSpesification.getSpesification(request);
         return transactionTypeRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public TransactionType create(NewTransactionType newTransactionType) {
+        validationUtil.validate(newTransactionType);
+        TransactionType transactionType=TransactionType.builder()
+                .id(newTransactionType.getId())
+                .description(newTransactionType.getDescription())
+                .build();
+        return transactionTypeRepository.saveAndFlush(transactionType);
     }
 }
