@@ -42,6 +42,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu update(UpdateMenuRequest request) {
+        validationUtil.validate(request);
         findById(request.getId());
         Menu menu= Menu.builder()
                 .menuName(request.getMenuName())
