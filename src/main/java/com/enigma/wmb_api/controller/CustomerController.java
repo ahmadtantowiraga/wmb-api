@@ -10,6 +10,7 @@ import com.enigma.wmb_api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,9 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @GetMapping
+    @GetMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<List<Customer>>> getAllProduct(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
@@ -57,7 +60,10 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<CommonResponse<Customer>> updateCustomer(@RequestBody UpdateCustomerRequest request){
         Customer customer=customerService.update(request);
         CommonResponse<Customer> commonResponse=CommonResponse.<Customer>builder()
@@ -68,7 +74,9 @@ public class CustomerController {
         return ResponseEntity.ok(commonResponse);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<Customer>> findById(@PathVariable(name="id") String id){
         Customer customer=customerService.findById(id);
         CommonResponse<Customer> response=CommonResponse.<Customer>builder()
@@ -79,7 +87,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         customerService.deleteById(id);
         CommonResponse<String> response=CommonResponse.<String>builder()

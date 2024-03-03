@@ -11,6 +11,7 @@ import com.enigma.wmb_api.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,10 @@ import java.util.List;
 @RequestMapping(path = APIUrl.MENU_API)
 public class MenuController {
     private final MenuService menuService;
-    @PostMapping
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<CommonResponse<Menu>> create(@RequestBody NewMenuRequest request){
         Menu menu=menuService.create(request);
         CommonResponse<Menu> response=CommonResponse.<Menu>builder()
@@ -31,7 +35,7 @@ public class MenuController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<Menu>> findById(@PathVariable String id){
         Menu menu=menuService.findById(id);
         CommonResponse<Menu> response=CommonResponse.<Menu>builder()
@@ -42,7 +46,10 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PutMapping
+    @PutMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<CommonResponse<Menu>> update(@RequestBody UpdateMenuRequest request){
         Menu menu=menuService.update(request);
         CommonResponse<Menu> response=CommonResponse.<Menu>builder()
@@ -53,7 +60,7 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         menuService.deleteById(id);
         CommonResponse<String> response=CommonResponse.<String>builder()
@@ -62,7 +69,10 @@ public class MenuController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @GetMapping
+    @GetMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<CommonResponse<List<Menu>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
