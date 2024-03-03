@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionDetailDetailSpesification {
+public class TransactionDetailSpesification {
     public static Specification<TransactionDetail> getSpesification(SearchTransactionDetailRequest request){
         return (root, query, cb) -> {
             List<Predicate> predicates=new ArrayList<>();

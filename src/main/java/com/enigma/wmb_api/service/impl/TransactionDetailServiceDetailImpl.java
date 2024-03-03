@@ -1,12 +1,10 @@
 package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.Transaction_detail_request.SearchTransactionDetailRequest;
-import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.repository.TransactionDetailRepository;
 import com.enigma.wmb_api.service.TransactionDetailService;
-import com.enigma.wmb_api.spesification.TransactionDetailDetailSpesification;
-import com.enigma.wmb_api.spesification.TransactionSpesification;
+import com.enigma.wmb_api.spesification.TransactionDetailSpesification;
 import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,7 +38,7 @@ public class TransactionDetailServiceDetailImpl implements TransactionDetailServ
         if (request.getPage() < 1) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
         Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
-        Specification<TransactionDetail> specification= TransactionDetailDetailSpesification.getSpesification(request);
+        Specification<TransactionDetail> specification= TransactionDetailSpesification.getSpesification(request);
         return transactionDetailRepository.findAll(specification, pageable);
     }
 }

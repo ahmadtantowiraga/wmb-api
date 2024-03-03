@@ -1,12 +1,9 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.APIUrl;
-import com.enigma.wmb_api.constant.TransactionTypeID;
 import com.enigma.wmb_api.dto.request.Transaction_detail_request.SearchTransactionDetailRequest;
-import com.enigma.wmb_api.dto.request.transaction_request.SearchTransactionRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
-import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.service.TransactionDetailService;
 import lombok.RequiredArgsConstructor;
