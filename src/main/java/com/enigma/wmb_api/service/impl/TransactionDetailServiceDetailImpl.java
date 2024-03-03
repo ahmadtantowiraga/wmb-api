@@ -14,7 +14,7 @@ public class TransactionDetailServiceDetailImpl implements TransactionDetailServ
     private final TransactionDetailRepository transactionDetailRepository;
     private final ValidationUtil validationUtil;
     @Override
-    public List<TransactionDetail> create(List<TransactionDetail> transactionDetails) {
+    public List<TransactionDetail> createBulk(List<TransactionDetail> transactionDetails) {
         validationUtil.validate(transactionDetails);
         return transactionDetailRepository.saveAllAndFlush(transactionDetails);
     }
