@@ -1,6 +1,7 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.APIUrl;
+import com.enigma.wmb_api.constant.TransactionTypeID;
 import com.enigma.wmb_api.dto.request.transaction_type_request.NewTransactionType;
 import com.enigma.wmb_api.dto.request.transaction_type_request.UpdateTransactionTypeRequest;
 import com.enigma.wmb_api.dto.request.transaction_type_request.SearchTransactionTypeRequest;
@@ -26,7 +27,7 @@ public class TransactionTypeController {
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionType>> findById(@PathVariable String id) {
-        TransactionType transactionType = transactionTypeService.findById(id);
+        TransactionType transactionType = transactionTypeService.findById(TransactionTypeID.valueOf(id));
         CommonResponse<TransactionType> response = CommonResponse.<TransactionType>builder()
                 .data(transactionType)
                 .statusCode(HttpStatus.OK.value())

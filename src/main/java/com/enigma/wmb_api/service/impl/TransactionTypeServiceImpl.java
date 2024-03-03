@@ -1,5 +1,6 @@
 package com.enigma.wmb_api.service.impl;
 
+import com.enigma.wmb_api.constant.TransactionTypeID;
 import com.enigma.wmb_api.dto.request.transaction_type_request.NewTransactionType;
 import com.enigma.wmb_api.dto.request.transaction_type_request.UpdateTransactionTypeRequest;
 import com.enigma.wmb_api.dto.request.transaction_type_request.SearchTransactionTypeRequest;
@@ -24,14 +25,14 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     private final TransactionTypeRepository transactionTypeRepository;
     private final ValidationUtil validationUtil;
     @Override
-    public TransactionType findById(String id) {
+    public TransactionType findById(TransactionTypeID id) {
         return transactionTypeRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "TransactionType is not found"));
     }
 
     @Override
     public TransactionType update(UpdateTransactionTypeRequest request) {
         validationUtil.validate(request);
-        findById(request.getId().name());
+        findById(request.getId());
         TransactionType transactionType=TransactionType.builder()
                 .description(request.getDescription())
                 .id(request.getId())
@@ -41,8 +42,8 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
 
     @Override
     public void delete(String id) {
-        findById(id);
-        transactionTypeRepository.deleteById(id);
+        findById(TransactionTypeID.valueOf(id));
+        transactionTypeRepository.deleteById(TransactionTypeID.valueOf(id));
     }
 
     @Override

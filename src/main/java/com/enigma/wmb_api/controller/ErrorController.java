@@ -53,15 +53,20 @@ public class ErrorController {
         return ResponseEntity.status(httpStatus).body(builder.build());
     }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<?> responseIllegalArgumentException(RuntimeException exception){
-        CommonResponse<?> commonResponse=CommonResponse.builder()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(exception.getMessage())
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(commonResponse);
-    }
+//    @ExceptionHandler({RuntimeException.class})
+//    public ResponseEntity<?> responseIllegalArgumentException(RuntimeException exception){
+//        CommonResponse.CommonResponseBuilder<?> builder=CommonResponse.builder();
+//
+//        HttpStatus httpStatus=HttpStatus.BAD_REQUEST;
+//        builder.statusCode(HttpStatus.BAD_REQUEST.value());
+//        builder.message(exception.getMessage());
+//
+//        if (exception.getMessage().contains("[EI, TA]")){
+//            builder.statusCode(HttpStatus.BAD_REQUEST.value());
+//            builder.message("not one of the values accepted for Enum class: [EI, TA]");
+//        }
+//        return ResponseEntity.status(httpStatus).body(builder.build());
+//    }
 
 
 }
