@@ -4,9 +4,14 @@ import com.enigma.wmb_api.constant.TransactionTypeID;
 import com.enigma.wmb_api.dto.request.Transaction_detail_request.NewTransactionDetailRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.util.List;
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class NewTransactionsRequest {
     @NotBlank(message = "customerId is required")
     private String customerId;
