@@ -35,7 +35,7 @@ public class MenuController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    @GetMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<Menu>> findById(@PathVariable String id){
         Menu menu=menuService.findById(id);
         CommonResponse<Menu> response=CommonResponse.<Menu>builder()
@@ -60,7 +60,7 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         menuService.deleteById(id);
         CommonResponse<String> response=CommonResponse.<String>builder()
@@ -70,7 +70,6 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<CommonResponse<List<Menu>>> findAll(

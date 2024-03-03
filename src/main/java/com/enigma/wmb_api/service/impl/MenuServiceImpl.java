@@ -45,6 +45,7 @@ public class MenuServiceImpl implements MenuService {
         validationUtil.validate(request);
         findById(request.getId());
         Menu menu= Menu.builder()
+                .id(request.getId())
                 .menuName(request.getMenuName())
                 .price(request.getPrice())
                 .build();

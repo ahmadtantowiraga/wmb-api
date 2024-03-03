@@ -29,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
         validationUtil.validate(updateCustomer);
         customerRepository.findById(updateCustomer.getId());
         Customer customer=Customer.builder()
+                .id(updateCustomer.getId())
                 .customerName(updateCustomer.getCustomerName())
                 .mobilePhoneNo(updateCustomer.getMobilePhoneNo())
                 .build();

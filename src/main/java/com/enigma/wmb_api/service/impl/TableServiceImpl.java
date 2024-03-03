@@ -43,6 +43,7 @@ public class TableServiceImpl implements TableService {
         validationUtil.validate(request);
         tableRepository.findById(request.getId());
         Tables tables=Tables.builder()
+                .id(request.getId())
                 .tableName(request.getTableName())
                 .build();
         return tableRepository.saveAndFlush(tables);
@@ -50,8 +51,8 @@ public class TableServiceImpl implements TableService {
 
     @Override
     public void delete(String id) {
-    Tables table=tableRepository.findById(id).get();
-    tableRepository.delete(table);
+    findById(id);
+    tableRepository.deleteById(id);
     }
 
     @Override

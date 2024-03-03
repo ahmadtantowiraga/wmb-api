@@ -53,4 +53,15 @@ public class ErrorController {
         return ResponseEntity.status(httpStatus).body(builder.build());
     }
 
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<?> responseIllegalArgumentException(RuntimeException exception){
+        CommonResponse<?> commonResponse=CommonResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(exception.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(commonResponse);
+    }
+
+
 }

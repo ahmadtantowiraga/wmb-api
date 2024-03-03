@@ -23,7 +23,6 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<List<Customer>>> getAllProduct(
             @RequestParam(name="page", defaultValue = "1") Integer page,
@@ -75,7 +74,6 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<Customer>> findById(@PathVariable(name="id") String id){
         Customer customer=customerService.findById(id);
@@ -87,7 +85,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         customerService.deleteById(id);
         CommonResponse<String> response=CommonResponse.<String>builder()

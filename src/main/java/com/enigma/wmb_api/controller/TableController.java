@@ -39,7 +39,7 @@ public class TableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<Tables>> findById(@PathVariable String id) {
         Tables tables = tableService.findById(id);
         CommonResponse<Tables> response = CommonResponse.<Tables>builder()
@@ -63,7 +63,7 @@ public class TableController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         tableService.delete(id);
         CommonResponse<String> response=CommonResponse.<String>builder()
@@ -74,14 +74,13 @@ public class TableController {
     }
 
     @GetMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<CommonResponse<List<Tables>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
-            @RequestParam(name="sortBy", defaultValue = "menuName") String sortBy,
+            @RequestParam(name="sortBy", defaultValue = "tableName") String sortBy,
             @RequestParam(name="tableName", required = false) String tableName) {
 
         SearchTableRequest request= SearchTableRequest.builder()
