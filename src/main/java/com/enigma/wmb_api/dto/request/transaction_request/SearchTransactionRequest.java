@@ -15,5 +15,5 @@ public class SearchTransactionRequest {
     private String sortBy;
     private String customerId;
     private String tableId;
-    private TransactionTypeID id;
+    private TransactionTypeID TransactionTypeId;
 }
