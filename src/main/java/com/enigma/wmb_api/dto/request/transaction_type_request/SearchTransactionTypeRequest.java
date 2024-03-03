@@ -12,5 +12,5 @@ public class SearchTransactionTypeRequest {
     private Integer size;
     private String direction;
     private String sortBy;
-    private String tableName;
+    private String description;
 }
