@@ -19,6 +19,7 @@ public class CustomerSpesification {
 
             if (request.getMobilePhoneNo() != null){
                 Predicate predicate=cb.like(cb.lower(root.get("mobilePhoneNo")), "%"+request.getMobilePhoneNo().toLowerCase()+"%");
+                predicates.add(predicate);
             }
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
