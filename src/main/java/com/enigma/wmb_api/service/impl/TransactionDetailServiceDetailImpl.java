@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -23,17 +24,20 @@ public class TransactionDetailServiceDetailImpl implements TransactionDetailServ
     private final TransactionDetailRepository transactionDetailRepository;
     private final ValidationUtil validationUtil;
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public List<TransactionDetail> createBulk(List<TransactionDetail> transactionDetails) {
         validationUtil.validate(transactionDetails);
         return transactionDetailRepository.saveAllAndFlush(transactionDetails);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public TransactionDetail findById(String id) {
         return transactionDetailRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"TransactionDetail Not Found"));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Page<TransactionDetail> findAll(SearchTransactionDetailRequest request) {
         if (request.getPage() < 1) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());

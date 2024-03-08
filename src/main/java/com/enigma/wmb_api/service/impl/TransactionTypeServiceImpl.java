@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -25,11 +26,13 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     private final TransactionTypeRepository transactionTypeRepository;
     private final ValidationUtil validationUtil;
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public TransactionType findById(TransactionTypeID id) {
         return transactionTypeRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "TransactionType is not found"));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public TransactionType update(UpdateTransactionTypeRequest request) {
         validationUtil.validate(request);
         findById(request.getId());
@@ -41,12 +44,14 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String id) {
         findById(TransactionTypeID.valueOf(id));
         transactionTypeRepository.deleteById(TransactionTypeID.valueOf(id));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Page<TransactionType> findAll(SearchTransactionTypeRequest request) {
         if (request.getPage()<1) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
@@ -56,6 +61,7 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public TransactionType create(NewTransactionType newTransactionType) {
         validationUtil.validate(newTransactionType);
         TransactionType transactionType=TransactionType.builder()

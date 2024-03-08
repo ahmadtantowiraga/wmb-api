@@ -9,7 +9,6 @@ import com.enigma.wmb_api.service.*;
 import com.enigma.wmb_api.spesification.TableSpesification;
 import com.enigma.wmb_api.spesification.TransactionSpesification;
 import com.enigma.wmb_api.util.ValidationUtil;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
@@ -34,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionTypeService transactionTypeService;
     private final TransactionDetailService transactionDetailService;
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Transaction create(NewTransactionsRequest request) {
         validationUtil.validate(request);
         Customer customer=customerService.findById(request.getCustomerId());
@@ -64,11 +64,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Transaction findById(String id) {
         return transactionRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transaction is not found"));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Page<Transaction> findAll(SearchTransactionRequest request) {
         if (request.getPage() < 1) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());

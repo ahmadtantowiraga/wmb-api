@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -25,6 +26,7 @@ public class TableServiceImpl implements TableService {
     private final ValidationUtil validationUtil;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Tables create(NewTableRequest request) {
         validationUtil.validate(request);
         Tables tables=Tables.builder()
@@ -34,11 +36,13 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Tables findById(String id) {
         return tableRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Table is not found"));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Tables update(UpdateTableRequest request) {
         validationUtil.validate(request);
         tableRepository.findById(request.getId());
@@ -50,12 +54,14 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String id) {
     findById(id);
     tableRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Page<Tables> findAll(SearchTableRequest request) {
         if (request.getPage() < 1) request.setPage(1);
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
