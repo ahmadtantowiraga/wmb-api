@@ -7,4 +7,6 @@ public class APIUrl {
     public static final String TRANSACTION_TYPE_API="/api/transactionTypes";
     public static final String TRANSACTION_API="/api/transactions";
     public static final String TRANSACTION_DETAIL_API="/api/transactionDetails";
+    public static final String AUTH_API = "/api/auth";
+
 }
