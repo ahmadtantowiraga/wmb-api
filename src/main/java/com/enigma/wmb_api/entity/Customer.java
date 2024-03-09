@@ -23,5 +23,12 @@ public class Customer {
     @Column(name="mobile_phone_no", columnDefinition = "VARCHAR(20)")
     private String mobilePhoneNo;
 
+    @Column(name = "status")
+    private Boolean status;
+
+    @JoinColumn(name = "user_account_id", unique = true)
+    @OneToOne
+    private UserAccount userAccount;
+
 
 }
