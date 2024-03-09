@@ -23,6 +23,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final ValidationUtil validationUtil;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Customer create(Customer customer) {
+        return customerRepository.saveAndFlush(customer);
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Customer update(UpdateCustomerRequest updateCustomer) {
