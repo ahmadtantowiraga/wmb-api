@@ -4,6 +4,9 @@ import com.enigma.wmb_api.constant.TransactionTypeID;
 import com.enigma.wmb_api.dto.request.transaction_type_request.NewTransactionType;
 import com.enigma.wmb_api.dto.request.transaction_type_request.UpdateTransactionTypeRequest;
 import com.enigma.wmb_api.dto.request.transaction_type_request.SearchTransactionTypeRequest;
+import com.enigma.wmb_api.dto.response.TableResponse;
+import com.enigma.wmb_api.dto.response.TransactionTypeResponse;
+import com.enigma.wmb_api.entity.Tables;
 import com.enigma.wmb_api.entity.TransactionType;
 import com.enigma.wmb_api.repository.TransactionTypeRepository;
 import com.enigma.wmb_api.service.TransactionTypeService;
@@ -32,15 +35,20 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
     }
 
     @Override
+    public TransactionTypeResponse findOneById(TransactionTypeID id) {
+        return convertTransactionTypeToTransactionTypeResponse(findById(id));
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public TransactionType update(UpdateTransactionTypeRequest request) {
+    public TransactionTypeResponse update(UpdateTransactionTypeRequest request) {
         validationUtil.validate(request);
         findById(request.getId());
         TransactionType transactionType=TransactionType.builder()
                 .description(request.getDescription())
                 .id(request.getId())
                 .build();
-        return transactionTypeRepository.saveAndFlush(transactionType);
+        return convertTransactionTypeToTransactionTypeResponse(transactionTypeRepository.saveAndFlush(transactionType));
     }
 
     @Override
@@ -62,12 +70,18 @@ public class TransactionTypeServiceImpl implements TransactionTypeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public TransactionType create(NewTransactionType newTransactionType) {
+    public TransactionTypeResponse create(NewTransactionType newTransactionType) {
         validationUtil.validate(newTransactionType);
         TransactionType transactionType=TransactionType.builder()
                 .id(newTransactionType.getId())
                 .description(newTransactionType.getDescription())
                 .build();
-        return transactionTypeRepository.saveAndFlush(transactionType);
+        return convertTransactionTypeToTransactionTypeResponse(transactionTypeRepository.saveAndFlush(transactionType));
+    }
+    private TransactionTypeResponse convertTransactionTypeToTransactionTypeResponse(TransactionType transactionType) {
+        return TransactionTypeResponse.builder()
+                .id(transactionType.getId())
+                .description(transactionType.getDescription())
+                .build();
     }
 }

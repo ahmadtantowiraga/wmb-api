@@ -7,6 +7,7 @@ import com.enigma.wmb_api.dto.request.transaction_type_request.UpdateTransaction
 import com.enigma.wmb_api.dto.request.transaction_type_request.SearchTransactionTypeRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
+import com.enigma.wmb_api.dto.response.TransactionTypeResponse;
 import com.enigma.wmb_api.entity.Tables;
 import com.enigma.wmb_api.entity.TransactionType;
 import com.enigma.wmb_api.service.TransactionTypeService;
@@ -26,12 +27,12 @@ public class TransactionTypeController {
     private final TransactionTypeService transactionTypeService;
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<TransactionType>> findById(@PathVariable String id) {
-        TransactionType transactionType = transactionTypeService.findById(TransactionTypeID.valueOf(id));
-        CommonResponse<TransactionType> response = CommonResponse.<TransactionType>builder()
+    public ResponseEntity<CommonResponse<TransactionTypeResponse>> findById(@PathVariable String id) {
+        TransactionTypeResponse transactionType = transactionTypeService.findOneById(TransactionTypeID.valueOf(id));
+        CommonResponse<TransactionTypeResponse> response = CommonResponse.<TransactionTypeResponse>builder()
                 .data(transactionType)
                 .statusCode(HttpStatus.OK.value())
-                .message("Success Get Table")
+                .message("Success Get TransactionType")
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -40,9 +41,9 @@ public class TransactionTypeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<TransactionType>> update(@RequestBody UpdateTransactionTypeRequest request){
-        TransactionType transactionType=transactionTypeService.update(request);
-        CommonResponse<TransactionType> response=CommonResponse.<TransactionType>builder()
+    public ResponseEntity<CommonResponse<TransactionTypeResponse>> update(@RequestBody UpdateTransactionTypeRequest request){
+        TransactionTypeResponse transactionType=transactionTypeService.update(request);
+        CommonResponse<TransactionTypeResponse> response=CommonResponse.<TransactionTypeResponse>builder()
                 .data(transactionType)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Update TransactionType")
@@ -61,7 +62,7 @@ public class TransactionTypeController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<TransactionType>>> findAll(
+    public ResponseEntity<CommonResponse<List<TransactionTypeResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -84,22 +85,28 @@ public class TransactionTypeController {
                 .totalPages(transactionType.getTotalPages())
                 .hasNext(transactionType.hasNext())
                 .build();
-        CommonResponse<List<TransactionType>> response=CommonResponse.<List<TransactionType>>builder()
+        CommonResponse<List<TransactionTypeResponse>> response=CommonResponse.<List<TransactionTypeResponse>>builder()
                 .message("Success Get TransactionType")
                 .statusCode(HttpStatus.OK.value())
-                .data(transactionType.getContent())
+                .data(transactionType.getContent().stream().map(this::convertTransactionTypeToTransactionTypeResponse).toList())
                 .pagingResponse(pagingResponse)
                 .build();
         return ResponseEntity.ok(response);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<TransactionType>> create(@RequestBody NewTransactionType request){
-        TransactionType transactionType=transactionTypeService.create(request);
-        CommonResponse<TransactionType> response=CommonResponse.<TransactionType>builder()
+    public ResponseEntity<CommonResponse<TransactionTypeResponse>> create(@RequestBody NewTransactionType request){
+        TransactionTypeResponse transactionType=transactionTypeService.create(request);
+        CommonResponse<TransactionTypeResponse> response=CommonResponse.<TransactionTypeResponse>builder()
                 .message("Success Create TransactionType")
                 .statusCode(HttpStatus.CREATED.value())
                 .data(transactionType)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    private TransactionTypeResponse convertTransactionTypeToTransactionTypeResponse(TransactionType transactionType) {
+        return TransactionTypeResponse.builder()
+                .id(transactionType.getId())
+                .description(transactionType.getDescription())
+                .build();
     }
 }

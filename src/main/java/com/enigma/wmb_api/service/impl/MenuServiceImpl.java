@@ -3,6 +3,7 @@ package com.enigma.wmb_api.service.impl;
 import com.enigma.wmb_api.dto.request.menu_request.NewMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.SearchMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.UpdateMenuRequest;
+import com.enigma.wmb_api.dto.response.MenuResponse;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
 import com.enigma.wmb_api.service.MenuService;
@@ -28,13 +29,13 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Menu create(NewMenuRequest request) {
+    public MenuResponse create(NewMenuRequest request) {
         validationUtil.validate(request);
         Menu menu= Menu.builder()
                 .menuName(request.getMenuName())
                 .price(request.getPrice())
                 .build();
-        return menuRepository.saveAndFlush(menu);
+        return convertMenuToMenuResponse(menuRepository.saveAndFlush(menu));
     }
 
     @Override
@@ -44,8 +45,13 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public MenuResponse findOneById(String id) {
+        return convertMenuToMenuResponse(findById(id));
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public Menu update(UpdateMenuRequest request) {
+    public MenuResponse update(UpdateMenuRequest request) {
         validationUtil.validate(request);
         findById(request.getId());
         Menu menu= Menu.builder()
@@ -53,7 +59,7 @@ public class MenuServiceImpl implements MenuService {
                 .menuName(request.getMenuName())
                 .price(request.getPrice())
                 .build();
-        return menuRepository.saveAndFlush(menu);
+        return convertMenuToMenuResponse(menuRepository.saveAndFlush(menu));
     }
 
     @Override
@@ -71,5 +77,12 @@ public class MenuServiceImpl implements MenuService {
         Sort sort=Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
         Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
         return menuRepository.findAll(specification, pageable);
+    }
+    private MenuResponse convertMenuToMenuResponse(Menu menu) {
+        return MenuResponse.builder()
+                .id(menu.getId())
+                .menuName(menu.getMenuName())
+                .price(menu.getPrice())
+                .build();
     }
 }

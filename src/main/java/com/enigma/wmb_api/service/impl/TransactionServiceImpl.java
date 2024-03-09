@@ -2,6 +2,8 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.transaction_request.NewTransactionsRequest;
 import com.enigma.wmb_api.dto.request.transaction_request.SearchTransactionRequest;
+import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
+import com.enigma.wmb_api.dto.response.TransactionResponse;
 import com.enigma.wmb_api.entity.*;
 import com.enigma.wmb_api.repository.TransactionDetailRepository;
 import com.enigma.wmb_api.repository.TransactionRepository;
@@ -35,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionDetailService transactionDetailService;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Transaction create(NewTransactionsRequest request) {
+    public TransactionResponse create(NewTransactionsRequest request) {
         validationUtil.validate(request);
         Customer customer=customerService.findById(request.getCustomerId());
         Tables tables=tableService.findById(request.getTableId());
@@ -60,13 +62,18 @@ public class TransactionServiceImpl implements TransactionService {
                 }).toList();
         List<TransactionDetail> transactionDetails=transactionDetailService.createBulk(transactionDetail);
         transaction1.setTransactionDetail(transactionDetails);
-        return transaction1;
+        return convertTransacionToTransactionResponse(transaction1);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Transaction findById(String id) {
         return transactionRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transaction is not found"));
+    }
+
+    @Override
+    public TransactionResponse findOneById(String id) {
+        return convertTransacionToTransactionResponse(findById(id));
     }
 
     @Override
@@ -77,5 +84,25 @@ public class TransactionServiceImpl implements TransactionService {
         Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
         Specification<Transaction> specification= TransactionSpesification.getSpesification(request);
         return transactionRepository.findAll(specification, pageable);
+    }
+    private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {
+        return TransactionResponse.builder()
+                .transactionDetailResponse(transaction.getTransactionDetail()
+                        .stream().map(this::convertTransacionDetailToTransactionDetailResponse).toList())
+                .customerName(transaction.getCustomer().getCustomerName())
+                .tableName(transaction.getTables().getTableName())
+                .date(transaction.getDate())
+                .id(transaction.getId())
+                .transactionType(transaction.getTransactionType().getId().name())
+                .build();
+    }
+    private TransactionDetailResponse convertTransacionDetailToTransactionDetailResponse(TransactionDetail transactionDetail) {
+        return TransactionDetailResponse.builder()
+                .id(transactionDetail.getId())
+                .transactionId(transactionDetail.getTransaction().getId())
+                .qty(transactionDetail.getQty())
+                .price(transactionDetail.getPrice())
+                .menuName(transactionDetail.getMenu().getMenuName())
+                .build();
     }
 }

@@ -14,5 +14,4 @@ public class CustomerResponse {
     private String customerName;
     private String mobilePhoneNo;
     private Boolean status;
-    private String userAccountId;
 }

@@ -5,6 +5,7 @@ import com.enigma.wmb_api.dto.request.menu_request.NewMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.SearchMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.UpdateMenuRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
+import com.enigma.wmb_api.dto.response.MenuResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.service.MenuService;
@@ -26,9 +27,9 @@ public class MenuController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Menu>> create(@RequestBody NewMenuRequest request){
-        Menu menu=menuService.create(request);
-        CommonResponse<Menu> response=CommonResponse.<Menu>builder()
+    public ResponseEntity<CommonResponse<MenuResponse>> create(@RequestBody NewMenuRequest request){
+        MenuResponse menu=menuService.create(request);
+        CommonResponse<MenuResponse> response=CommonResponse.<MenuResponse>builder()
                 .message("Success Create Menu")
                 .statusCode(HttpStatus.CREATED.value())
                 .data(menu)
@@ -36,9 +37,9 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<Menu>> findById(@PathVariable String id){
-        Menu menu=menuService.findById(id);
-        CommonResponse<Menu> response=CommonResponse.<Menu>builder()
+    public ResponseEntity<CommonResponse<MenuResponse>> findById(@PathVariable String id){
+        MenuResponse menu=menuService.findOneById(id);
+        CommonResponse<MenuResponse> response=CommonResponse.<MenuResponse>builder()
                 .data(menu)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Get Menu")
@@ -50,9 +51,9 @@ public class MenuController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Menu>> update(@RequestBody UpdateMenuRequest request){
-        Menu menu=menuService.update(request);
-        CommonResponse<Menu> response=CommonResponse.<Menu>builder()
+    public ResponseEntity<CommonResponse<MenuResponse>> update(@RequestBody UpdateMenuRequest request){
+        MenuResponse menu=menuService.update(request);
+        CommonResponse<MenuResponse> response=CommonResponse.<MenuResponse>builder()
                 .data(menu)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Update Menu")
@@ -72,7 +73,7 @@ public class MenuController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<Menu>>> findAll(
+    public ResponseEntity<CommonResponse<List<MenuResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -97,13 +98,20 @@ public class MenuController {
                 .totalPages(menu.getTotalPages())
                 .hasNext(menu.hasNext())
                 .build();
-        CommonResponse<List<Menu>> response=CommonResponse.<List<Menu>>builder()
+        CommonResponse<List<MenuResponse>> response=CommonResponse.<List<MenuResponse>>builder()
                 .message("Success Get Menu")
                 .statusCode(HttpStatus.OK.value())
-                .data(menu.getContent())
+                .data(menu.getContent().stream().map(this::convertMenuToMenuResponse).toList())
                 .pagingResponse(pagingResponse)
                 .build();
         return ResponseEntity.ok(response);
+    }
+    private MenuResponse convertMenuToMenuResponse(Menu menu) {
+        return MenuResponse.builder()
+                .id(menu.getId())
+                .menuName(menu.getMenuName())
+                .price(menu.getPrice())
+                .build();
     }
 
 

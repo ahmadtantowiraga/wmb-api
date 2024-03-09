@@ -4,6 +4,7 @@ import com.enigma.wmb_api.constant.APIUrl;
 import com.enigma.wmb_api.dto.request.customer_request.UpdateCustomerRequest;
 import com.enigma.wmb_api.dto.request.customer_request.SearchCustomerRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
+import com.enigma.wmb_api.dto.response.CustomerResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.service.CustomerService;
@@ -24,7 +25,7 @@ public class CustomerController {
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<List<Customer>>> getAllProduct(
+    public ResponseEntity<CommonResponse<List<CustomerResponse>>> getAllProduct(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -50,11 +51,15 @@ public class CustomerController {
                 .size(customers.getSize())
                 .totalElement(customers.getTotalElements())
                 .build();
-        CommonResponse<List<Customer>> response=CommonResponse.<List<Customer>>builder()
+        CommonResponse<List<CustomerResponse>> response=CommonResponse.<List<CustomerResponse>>builder()
                 .message("Success Get All Product")
                 .statusCode(HttpStatus.OK.value())
                 .pagingResponse(pagingResponse)
-                .data(customers.getContent())
+                .data(customers.getContent().stream().map(customer -> CustomerResponse.builder()
+                        .id(customer.getId())
+                        .status(customer.getStatus())
+                        .mobilePhoneNo(customer.getMobilePhoneNo())
+                        .customerName(customer.getCustomerName()).build()).toList())
                 .build();
         return ResponseEntity.ok(response);
     }
@@ -63,9 +68,9 @@ public class CustomerController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Customer>> updateCustomer(@RequestBody UpdateCustomerRequest request){
-        Customer customer=customerService.update(request);
-        CommonResponse<Customer> commonResponse=CommonResponse.<Customer>builder()
+    public ResponseEntity<CommonResponse<CustomerResponse>> updateCustomer(@RequestBody UpdateCustomerRequest request){
+        CustomerResponse customer=customerService.update(request);
+        CommonResponse<CustomerResponse> commonResponse=CommonResponse.<CustomerResponse>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully Update Customer")
                 .data(customer)
@@ -75,9 +80,9 @@ public class CustomerController {
 
     @GetMapping(value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<Customer>> findById(@PathVariable(name="id") String id){
-        Customer customer=customerService.findById(id);
-        CommonResponse<Customer> response=CommonResponse.<Customer>builder()
+    public ResponseEntity<CommonResponse<CustomerResponse>> findById(@PathVariable(name="id") String id){
+        CustomerResponse customer=customerService.findOneById(id);
+        CommonResponse<CustomerResponse> response=CommonResponse.<CustomerResponse>builder()
                 .data(customer)
                 .message("Success Get Customer")
                 .statusCode(HttpStatus.OK.value())

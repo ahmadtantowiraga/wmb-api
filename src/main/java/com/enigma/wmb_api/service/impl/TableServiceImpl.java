@@ -3,6 +3,9 @@ package com.enigma.wmb_api.service.impl;
 import com.enigma.wmb_api.dto.request.table_request.NewTableRequest;
 import com.enigma.wmb_api.dto.request.table_request.SearchTableRequest;
 import com.enigma.wmb_api.dto.request.table_request.UpdateTableRequest;
+import com.enigma.wmb_api.dto.response.MenuResponse;
+import com.enigma.wmb_api.dto.response.TableResponse;
+import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.entity.Tables;
 import com.enigma.wmb_api.repository.TableRepository;
 import com.enigma.wmb_api.service.TableService;
@@ -27,12 +30,12 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Tables create(NewTableRequest request) {
+    public TableResponse create(NewTableRequest request) {
         validationUtil.validate(request);
         Tables tables=Tables.builder()
                 .tableName(request.getTableName())
                 .build();
-        return tableRepository.saveAndFlush(tables);
+        return convertTableToTableResponse(tableRepository.saveAndFlush(tables));
     }
 
     @Override
@@ -42,15 +45,20 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
+    public TableResponse findOneById(String id) {
+        return convertTableToTableResponse(findById(id));
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public Tables update(UpdateTableRequest request) {
+    public TableResponse update(UpdateTableRequest request) {
         validationUtil.validate(request);
         tableRepository.findById(request.getId());
         Tables tables=Tables.builder()
                 .id(request.getId())
                 .tableName(request.getTableName())
                 .build();
-        return tableRepository.saveAndFlush(tables);
+        return convertTableToTableResponse(tableRepository.saveAndFlush(tables));
     }
 
     @Override
@@ -68,5 +76,11 @@ public class TableServiceImpl implements TableService {
         Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
         Specification<Tables> specification= TableSpesification.getSpesification(request);
         return tableRepository.findAll(specification, pageable);
+    }
+    private TableResponse convertTableToTableResponse(Tables table) {
+        return TableResponse.builder()
+                .id(table.getId())
+                .tableName(table.getTableName())
+                .build();
     }
 }

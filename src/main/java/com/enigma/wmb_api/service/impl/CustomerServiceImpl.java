@@ -2,6 +2,7 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.customer_request.UpdateCustomerRequest;
 import com.enigma.wmb_api.dto.request.customer_request.SearchCustomerRequest;
+import com.enigma.wmb_api.dto.response.CustomerResponse;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
@@ -32,29 +33,46 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Customer update(UpdateCustomerRequest updateCustomer) {
+    public CustomerResponse update(UpdateCustomerRequest updateCustomer) {
         validationUtil.validate(updateCustomer);
         Customer currentCustomer=findById(updateCustomer.getId());
-        Customer customer=Customer.builder()
+        Customer customer = Customer.builder()
                 .id(updateCustomer.getId())
                 .customerName(updateCustomer.getCustomerName())
                 .mobilePhoneNo(updateCustomer.getMobilePhoneNo())
                 .userAccount(currentCustomer.getUserAccount())
                 .status(currentCustomer.getStatus())
                 .build();
-        return customerRepository.saveAndFlush(customer);
+        Customer upadateCustomer = customerRepository.saveAndFlush(customer);
+        return CustomerResponse.builder()
+                .customerName(updateCustomer.getCustomerName())
+                .id(updateCustomer.getId())
+                .mobilePhoneNo(updateCustomer.getMobilePhoneNo())
+                .status(upadateCustomer.getStatus())
+                .build();
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Customer findById(String id) {
         return customerRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer not Found"));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public CustomerResponse findOneById(String id) {
+        Customer customer= customerRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer not Found"));
+        return CustomerResponse.builder()
+                .customerName(customer.getCustomerName())
+                .status(customer.getStatus())
+                .mobilePhoneNo(customer.getMobilePhoneNo())
+                .id(customer.getId())
+                .build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        Customer customer=findById(id);
+        Customer customer= findById(id);
         customerRepository.delete(customer);
     }
 

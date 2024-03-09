@@ -1,6 +1,8 @@
 package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.Transaction_detail_request.SearchTransactionDetailRequest;
+import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
+import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.repository.TransactionDetailRepository;
 import com.enigma.wmb_api.service.TransactionDetailService;
@@ -28,12 +30,18 @@ public class TransactionDetailServiceDetailImpl implements TransactionDetailServ
     public List<TransactionDetail> createBulk(List<TransactionDetail> transactionDetails) {
         validationUtil.validate(transactionDetails);
         return transactionDetailRepository.saveAllAndFlush(transactionDetails);
+
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public TransactionDetail findById(String id) {
         return transactionDetailRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"TransactionDetail Not Found"));
+    }
+
+    @Override
+    public TransactionDetailResponse findOneById(String id) {
+        return convertTransacionDetailToTransactionDetailResponse(findById(id));
     }
 
     @Override
@@ -44,5 +52,14 @@ public class TransactionDetailServiceDetailImpl implements TransactionDetailServ
         Pageable pageable= PageRequest.of(request.getPage()-1, request.getSize(), sort);
         Specification<TransactionDetail> specification= TransactionDetailSpesification.getSpesification(request);
         return transactionDetailRepository.findAll(specification, pageable);
+    }
+    private TransactionDetailResponse convertTransacionDetailToTransactionDetailResponse(TransactionDetail transactionDetail) {
+        return TransactionDetailResponse.builder()
+                .id(transactionDetail.getId())
+                .transactionId(transactionDetail.getTransaction().getId())
+                .qty(transactionDetail.getQty())
+                .price(transactionDetail.getPrice())
+                .menuName(transactionDetail.getMenu().getMenuName())
+                .build();
     }
 }

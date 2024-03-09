@@ -23,7 +23,7 @@ public class ErrorController {
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity<?> responseContraintViolationException(ConstraintViolationException exception){
+    public ResponseEntity<?> responseConstraintViolationException(ConstraintViolationException exception){
         CommonResponse<?> commonResponse=CommonResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .message(exception.getMessage())
@@ -32,7 +32,7 @@ public class ErrorController {
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<?> responeDataIntegrityViolationException(DataIntegrityViolationException e){
+    public ResponseEntity<?> responseDataIntegrityViolationException(DataIntegrityViolationException e){
         CommonResponse.CommonResponseBuilder<?> builder=CommonResponse.builder();
 
         HttpStatus httpStatus;
@@ -62,22 +62,25 @@ public class ErrorController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<?> responseIllegalArgumentException(IllegalArgumentException e){
+        CommonResponse.CommonResponseBuilder<?> builder=CommonResponse.builder();
 
+        HttpStatus httpStatus;
 
-//    @ExceptionHandler({RuntimeException.class})
-//    public ResponseEntity<?> responseIllegalArgumentException(RuntimeException exception){
-//        CommonResponse.CommonResponseBuilder<?> builder=CommonResponse.builder();
-//
-//        HttpStatus httpStatus=HttpStatus.BAD_REQUEST;
-//        builder.statusCode(HttpStatus.BAD_REQUEST.value());
-//        builder.message(exception.getMessage());
-//
-//        if (exception.getMessage().contains("[EI, TA]")){
-//            builder.statusCode(HttpStatus.BAD_REQUEST.value());
-//            builder.message("not one of the values accepted for Enum class: [EI, TA]");
-//        }
-//        return ResponseEntity.status(httpStatus).body(builder.build());
-//    }
+        if (e.getMessage().contains("'desc' or 'asc'")){
+            builder.statusCode(HttpStatus.BAD_REQUEST.value());
+            builder.message("Has to be either 'desc' or 'asc'");
+            httpStatus=HttpStatus.BAD_REQUEST;
+        }else{
+            builder.statusCode((HttpStatus.INTERNAL_SERVER_ERROR.value()));
+            builder.message("Internal Server Error");
+            httpStatus=HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return ResponseEntity.status(httpStatus).body(builder.build());
+    }
+
+    
 
 
 }

@@ -8,8 +8,11 @@ import com.enigma.wmb_api.dto.request.transaction_request.NewTransactionsRequest
 import com.enigma.wmb_api.dto.request.transaction_request.SearchTransactionRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
+import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
+import com.enigma.wmb_api.dto.response.TransactionResponse;
 import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.Transaction;
+import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,9 +29,9 @@ import java.util.List;
 public class TransactionController {
     private final TransactionService transactionService;
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<Transaction>> create(@RequestBody NewTransactionsRequest request){
-        Transaction transaction=transactionService.create(request);
-        CommonResponse<Transaction> response=CommonResponse.<Transaction>builder()
+    public ResponseEntity<CommonResponse<TransactionResponse>> create(@RequestBody NewTransactionsRequest request){
+        TransactionResponse transaction=transactionService.create(request);
+        CommonResponse<TransactionResponse> response=CommonResponse.<TransactionResponse>builder()
                 .message("Success Create Transaction")
                 .statusCode(HttpStatus.CREATED.value())
                 .data(transaction)
@@ -36,9 +39,9 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<Transaction>> findById(@PathVariable String id) {
-        Transaction transaction = transactionService.findById(id);
-        CommonResponse<Transaction> response = CommonResponse.<Transaction>builder()
+    public ResponseEntity<CommonResponse<TransactionResponse>> findById(@PathVariable String id) {
+        TransactionResponse transaction = transactionService.findOneById(id);
+        CommonResponse<TransactionResponse> response = CommonResponse.<TransactionResponse>builder()
                 .data(transaction)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Get Transaction")
@@ -48,7 +51,7 @@ public class TransactionController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<Transaction>>> findAll(
+    public ResponseEntity<CommonResponse<List<TransactionResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -75,12 +78,32 @@ public class TransactionController {
                 .totalPages(transactions.getTotalPages())
                 .hasNext(transactions.hasNext())
                 .build();
-        CommonResponse<List<Transaction>> response=CommonResponse.<List<Transaction>>builder()
+        CommonResponse<List<TransactionResponse>> response=CommonResponse.<List<TransactionResponse>>builder()
                 .message("Success Get Transaction")
                 .statusCode(HttpStatus.OK.value())
-                .data(transactions.getContent())
+                .data(transactions.getContent().stream().map(this::convertTransacionToTransactionResponse).toList())
                 .pagingResponse(pagingResponse)
                 .build();
         return ResponseEntity.ok(response);
+    }
+    private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {
+        return TransactionResponse.builder()
+                .transactionDetailResponse(transaction.getTransactionDetail()
+                        .stream().map(this::convertTransacionDetailToTransactionDetailResponse).toList())
+                .customerName(transaction.getCustomer().getCustomerName())
+                .tableName(transaction.getTables().getTableName())
+                .date(transaction.getDate())
+                .id(transaction.getId())
+                .transactionType(transaction.getTransactionType().getId().name())
+                .build();
+    }
+    private TransactionDetailResponse convertTransacionDetailToTransactionDetailResponse(TransactionDetail transactionDetail) {
+        return TransactionDetailResponse.builder()
+                .id(transactionDetail.getId())
+                .transactionId(transactionDetail.getTransaction().getId())
+                .qty(transactionDetail.getQty())
+                .price(transactionDetail.getPrice())
+                .menuName(transactionDetail.getMenu().getMenuName())
+                .build();
     }
 }

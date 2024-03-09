@@ -8,6 +8,7 @@ import com.enigma.wmb_api.dto.request.table_request.SearchTableRequest;
 import com.enigma.wmb_api.dto.request.table_request.UpdateTableRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
+import com.enigma.wmb_api.dto.response.TableResponse;
 import com.enigma.wmb_api.entity.Tables;
 
 import com.enigma.wmb_api.entity.TransactionType;
@@ -29,9 +30,9 @@ public class TableController {
     private final TableService tableService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<Tables>> create(@RequestBody NewTableRequest request){
-        Tables tables=tableService.create(request);
-        CommonResponse<Tables> response=CommonResponse.<Tables>builder()
+    public ResponseEntity<CommonResponse<TableResponse>> create(@RequestBody NewTableRequest request){
+        TableResponse tables=tableService.create(request);
+        CommonResponse<TableResponse> response=CommonResponse.<TableResponse>builder()
                 .message("Success Create Table")
                 .statusCode(HttpStatus.CREATED.value())
                 .data(tables)
@@ -40,9 +41,9 @@ public class TableController {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<Tables>> findById(@PathVariable String id) {
-        Tables tables = tableService.findById(id);
-        CommonResponse<Tables> response = CommonResponse.<Tables>builder()
+    public ResponseEntity<CommonResponse<TableResponse>> findById(@PathVariable String id) {
+        TableResponse tables = tableService.findOneById(id);
+        CommonResponse<TableResponse> response = CommonResponse.<TableResponse>builder()
                 .data(tables)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Get Table")
@@ -53,9 +54,9 @@ public class TableController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<Tables>> update(@RequestBody UpdateTableRequest request){
-        Tables table=tableService.update(request);
-        CommonResponse<Tables> response=CommonResponse.<Tables>builder()
+    public ResponseEntity<CommonResponse<TableResponse>> update(@RequestBody UpdateTableRequest request){
+        TableResponse table=tableService.update(request);
+        CommonResponse<TableResponse> response=CommonResponse.<TableResponse>builder()
                 .data(table)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Update Tables")
@@ -76,7 +77,7 @@ public class TableController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<Tables>>> findAll(
+    public ResponseEntity<CommonResponse<List<TableResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -99,13 +100,19 @@ public class TableController {
                 .totalPages(tables.getTotalPages())
                 .hasNext(tables.hasNext())
                 .build();
-        CommonResponse<List<Tables>> response=CommonResponse.<List<Tables>>builder()
+        CommonResponse<List<TableResponse>> response=CommonResponse.<List<TableResponse>>builder()
                 .message("Success Get Tables")
                 .statusCode(HttpStatus.OK.value())
-                .data(tables.getContent())
+                .data(tables.getContent().stream().map(this::convertTableToTableResponse).toList())
                 .pagingResponse(pagingResponse)
                 .build();
         return ResponseEntity.ok(response);
     }
 
+    private TableResponse convertTableToTableResponse(Tables table) {
+        return TableResponse.builder()
+                .id(table.getId())
+                .tableName(table.getTableName())
+                .build();
+    }
 }

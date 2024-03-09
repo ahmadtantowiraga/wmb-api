@@ -4,6 +4,7 @@ import com.enigma.wmb_api.constant.APIUrl;
 import com.enigma.wmb_api.dto.request.Transaction_detail_request.SearchTransactionDetailRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
+import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
 import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.service.TransactionDetailService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,9 @@ import java.util.List;
 public class TransactionDetailController {
     private final TransactionDetailService transactionDetailService;
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<TransactionDetail>> findById(@PathVariable String id) {
-        TransactionDetail transactionDetail = transactionDetailService.findById(id);
-        CommonResponse<TransactionDetail> response = CommonResponse.<TransactionDetail>builder()
+    public ResponseEntity<CommonResponse<TransactionDetailResponse>> findById(@PathVariable String id) {
+        TransactionDetailResponse transactionDetail = transactionDetailService.findOneById(id);
+        CommonResponse<TransactionDetailResponse> response = CommonResponse.<TransactionDetailResponse>builder()
                 .data(transactionDetail)
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Get TransactionDetail")
@@ -33,7 +34,7 @@ public class TransactionDetailController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<List<TransactionDetail>>> findAll(
+    public ResponseEntity<CommonResponse<List<TransactionDetailResponse>>> findAll(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -60,12 +61,22 @@ public class TransactionDetailController {
                 .totalPages(transactionDetails.getTotalPages())
                 .hasNext(transactionDetails.hasNext())
                 .build();
-        CommonResponse<List<TransactionDetail>> response=CommonResponse.<List<TransactionDetail>>builder()
+        CommonResponse<List<TransactionDetailResponse>> response=CommonResponse.<List<TransactionDetailResponse>>builder()
                 .message("Success Get Transaction Detail")
                 .statusCode(HttpStatus.OK.value())
-                .data(transactionDetails.getContent())
+                .data(transactionDetails.getContent().stream()
+                        .map(this::convertTransacionDetailToTransactionDetailResponse).toList())
                 .pagingResponse(pagingResponse)
                 .build();
         return ResponseEntity.ok(response);
+    }
+    private TransactionDetailResponse convertTransacionDetailToTransactionDetailResponse(TransactionDetail transactionDetail) {
+        return TransactionDetailResponse.builder()
+                .id(transactionDetail.getId())
+                .transactionId(transactionDetail.getTransaction().getId())
+                .qty(transactionDetail.getQty())
+                .price(transactionDetail.getPrice())
+                .menuName(transactionDetail.getMenu().getMenuName())
+                .build();
     }
 }
