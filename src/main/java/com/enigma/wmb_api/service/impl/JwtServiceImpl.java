@@ -9,10 +9,11 @@ import com.enigma.wmb_api.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
-
+@Service
 public class JwtServiceImpl implements JwtService {
     @Value("${JWT_SECRET:MTIzNDU2Nzg=}")
     private String JWT_SECRET;

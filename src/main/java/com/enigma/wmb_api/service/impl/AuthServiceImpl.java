@@ -10,6 +10,7 @@ import com.enigma.wmb_api.entity.UserAccount;
 import com.enigma.wmb_api.repository.UserAccountRepository;
 import com.enigma.wmb_api.service.AuthService;
 import com.enigma.wmb_api.service.CustomerService;
+import com.enigma.wmb_api.service.JwtService;
 import com.enigma.wmb_api.service.RoleService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserAccountRepository userAccountRepository;
     private final CustomerService customerService;
+    private final JwtService jwtService;
 
     @Value("${USERNAME_SUPER_ADMIN:superadmin}")
     private String usernameSuperAdmin;
@@ -101,6 +103,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(AuthRequest request) {
-        return null;
+        String token= jwtService.generateToken(new UserAccount());
+        return LoginResponse.builder()
+                .token(token)
+                .build();
     }
 }
