@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.List;
 @RequestMapping(path = APIUrl.MENU_API)
 public class MenuController {
     private final MenuService menuService;
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -36,6 +39,7 @@ public class MenuController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<MenuResponse>> findById(@PathVariable String id){
         MenuResponse menu=menuService.findOneById(id);
@@ -47,6 +51,7 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -61,6 +66,7 @@ public class MenuController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         menuService.deleteById(id);
@@ -70,6 +76,7 @@ public class MenuController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )

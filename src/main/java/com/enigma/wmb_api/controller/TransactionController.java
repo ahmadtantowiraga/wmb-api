@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping(path= APIUrl.TRANSACTION_API)
 public class TransactionController {
     private final TransactionService transactionService;
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionResponse>> create(@RequestBody NewTransactionsRequest request){
         TransactionResponse transaction=transactionService.create(request);
@@ -38,6 +40,7 @@ public class TransactionController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionResponse>> findById(@PathVariable String id) {
         TransactionResponse transaction = transactionService.findOneById(id);
@@ -48,6 +51,8 @@ public class TransactionController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class TransactionTypeController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -50,6 +52,7 @@ public class TransactionTypeController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         transactionTypeService.delete(id);
@@ -59,6 +62,8 @@ public class TransactionTypeController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -93,6 +98,8 @@ public class TransactionTypeController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionTypeResponse>> create(@RequestBody NewTransactionType request){
         TransactionTypeResponse transactionType=transactionTypeService.create(request);
