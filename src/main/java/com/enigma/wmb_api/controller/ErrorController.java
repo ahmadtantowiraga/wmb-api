@@ -43,7 +43,7 @@ public class ErrorController {
             httpStatus=HttpStatus.BAD_REQUEST;
         }else if(e.getMessage().contains("unique constraint") || e.getMessage().contains("Duplicate entry")){
             builder.statusCode(HttpStatus.CONFLICT.value());
-            builder.message("Data Alredy Exist");
+            builder.message("Data Already Exist");
             httpStatus=HttpStatus.CONFLICT;
 
         }else{
@@ -60,6 +60,29 @@ public class ErrorController {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<CommonResponse<?>> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
+        CommonResponse.CommonResponseBuilder<Object> builder = CommonResponse.builder();
+
+        HttpStatus httpStatus;
+
+        if (e.getMessage().contains("foreign key constraint")) {
+            builder.statusCode(HttpStatus.BAD_REQUEST.value());
+            builder.message("tidak dapat menghapus data karena ada referensi dari tabel lain");
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (e.getMessage().contains("unique constraint") || e.getMessage().contains("Duplicate entry")) {
+            builder.statusCode(HttpStatus.CONFLICT.value());
+            builder.message("Data already exist");
+            httpStatus = HttpStatus.CONFLICT;
+        } else {
+            builder.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            builder.message("Internal Server Error");
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return ResponseEntity.status(httpStatus).body(builder.build());
     }
 
 //    @ExceptionHandler({RuntimeException.class})

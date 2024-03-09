@@ -11,12 +11,15 @@ import com.enigma.wmb_api.repository.UserAccountRepository;
 import com.enigma.wmb_api.service.AuthService;
 import com.enigma.wmb_api.service.CustomerService;
 import com.enigma.wmb_api.service.RoleService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,30 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserAccountRepository userAccountRepository;
     private final CustomerService customerService;
+
+    @Value("${USERNAME_SUPER_ADMIN:superadmin}")
+    private String usernameSuperAdmin;
+
+    @Value("${PASSWORD_SUPER_ADMIN:password}")
+    private String passwordSuperAdmin;
+
+    @Transactional(rollbackFor = Exception.class)
+    @PostConstruct
+    public void iniSuperAdmin(){
+        Optional<UserAccount> superAdminAccount=userAccountRepository.findByUsername(usernameSuperAdmin);
+        if (superAdminAccount.isPresent()) return;
+
+        Role superAdmin = roleService.getOrSave(UserRole.ROLE_SUPER_ADMIN);
+        Role admin = roleService.getOrSave(UserRole.ROLE_ADMIN);
+        Role customer = roleService.getOrSave(UserRole.ROLE_CUSTOMER);
+        UserAccount account = UserAccount.builder()
+                .username(usernameSuperAdmin)
+                .password(passwordEncoder.encode(passwordSuperAdmin))
+                .role(List.of(superAdmin, admin, customer))
+                .isEnable(true)
+                .build();
+        userAccountRepository.save(account);
+    }
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RegisterResponse register(AuthRequest request) {
@@ -49,6 +76,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RegisterResponse registerAdmin(AuthRequest request) {
         Role roleUser=roleService.getOrSave(UserRole.ROLE_CUSTOMER);
         Role roleAdmin = roleService.getOrSave(UserRole.ROLE_ADMIN);
