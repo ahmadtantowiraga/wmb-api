@@ -6,6 +6,7 @@ import com.enigma.wmb_api.dto.response.CustomerResponse;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.repository.CustomerRepository;
 import com.enigma.wmb_api.service.CustomerService;
+import com.enigma.wmb_api.service.UserAccountService;
 import com.enigma.wmb_api.spesification.CustomerSpesification;
 import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +26,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final ValidationUtil validationUtil;
+    private final UserAccountService userAccountService;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -74,9 +78,11 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteById(String id) {
         Customer customer= findById(id);
         customerRepository.delete(customer);
+        userAccountService.deleteById(customer.getUserAccount().getId());
     }
 
     @Override
+    @PostAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Transactional(rollbackFor = Exception.class)
     public Page<Customer> findAll(SearchCustomerRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
@@ -85,5 +91,6 @@ public class CustomerServiceImpl implements CustomerService {
         Specification<Customer> specification= CustomerSpesification.specificationCustomer(request);
         return customerRepository.findAll(specification, pageable);
     }
+
 
 }

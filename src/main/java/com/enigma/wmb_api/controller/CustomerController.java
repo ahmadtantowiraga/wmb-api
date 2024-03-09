@@ -8,11 +8,15 @@ import com.enigma.wmb_api.dto.response.CustomerResponse;
 import com.enigma.wmb_api.dto.response.PagingResponse;
 import com.enigma.wmb_api.entity.Customer;
 import com.enigma.wmb_api.service.CustomerService;
+import com.enigma.wmb_api.service.UserService;
+import com.enigma.wmb_api.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +27,11 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
 
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommonResponse<List<CustomerResponse>>> getAllProduct(
+    public ResponseEntity<CommonResponse<List<CustomerResponse>>> getAllCustomer(
             @RequestParam(name="page", defaultValue = "1") Integer page,
             @RequestParam(name="size", defaultValue = "10") Integer size,
             @RequestParam(name="direction", defaultValue = "asc") String direction,
@@ -52,7 +58,7 @@ public class CustomerController {
                 .totalElement(customers.getTotalElements())
                 .build();
         CommonResponse<List<CustomerResponse>> response=CommonResponse.<List<CustomerResponse>>builder()
-                .message("Success Get All Product")
+                .message("Success Get All Customer")
                 .statusCode(HttpStatus.OK.value())
                 .pagingResponse(pagingResponse)
                 .data(customers.getContent().stream().map(customer -> CustomerResponse.builder()
@@ -64,6 +70,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN') OR @userServiceImpl.hasSameIdRequest(#request)")
     @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -78,6 +85,7 @@ public class CustomerController {
         return ResponseEntity.ok(commonResponse);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN') OR @userServiceImpl.hasSameId(#id)")
     @GetMapping(value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<CustomerResponse>> findById(@PathVariable(name="id") String id){
@@ -90,6 +98,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN') OR @userServiceImpl.hasSameId(#id)")
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id){
         customerService.deleteById(id);
