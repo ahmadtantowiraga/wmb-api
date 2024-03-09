@@ -3,6 +3,7 @@ package com.enigma.wmb_api.controller;
 import com.enigma.wmb_api.constant.APIUrl;
 import com.enigma.wmb_api.dto.request.auth_request.AuthRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
+import com.enigma.wmb_api.dto.response.LoginResponse;
 import com.enigma.wmb_api.dto.response.RegisterResponse;
 import com.enigma.wmb_api.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,17 @@ public class AuthController {
                 .data(response)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponse);
+    }
+    @PostMapping(path = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommonResponse<?>> login(@RequestBody AuthRequest request){
+        LoginResponse response=authService.login(request);
+        CommonResponse<LoginResponse> commonResponse= CommonResponse.<LoginResponse>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Login Successfully")
+                .data(response)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponse);
     }
 }
