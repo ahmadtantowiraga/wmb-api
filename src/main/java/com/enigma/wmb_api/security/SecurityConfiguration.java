@@ -19,7 +19,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req-> req.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .build();
 
 

@@ -1,7 +1,7 @@
 package com.enigma.wmb_api.controller;
 
 import com.enigma.wmb_api.constant.APIUrl;
-import com.enigma.wmb_api.dto.request.AuthRequest;
+import com.enigma.wmb_api.dto.request.auth_request.AuthRequest;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import com.enigma.wmb_api.dto.response.RegisterResponse;
 import com.enigma.wmb_api.service.AuthService;

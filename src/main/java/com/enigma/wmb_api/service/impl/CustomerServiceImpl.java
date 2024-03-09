@@ -34,11 +34,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional(rollbackFor = Exception.class)
     public Customer update(UpdateCustomerRequest updateCustomer) {
         validationUtil.validate(updateCustomer);
-        customerRepository.findById(updateCustomer.getId());
+        Customer currentCustomer=findById(updateCustomer.getId());
         Customer customer=Customer.builder()
                 .id(updateCustomer.getId())
                 .customerName(updateCustomer.getCustomerName())
                 .mobilePhoneNo(updateCustomer.getMobilePhoneNo())
+                .userAccount(currentCustomer.getUserAccount())
+                .status(currentCustomer.getStatus())
                 .build();
         return customerRepository.saveAndFlush(customer);
     }
