@@ -7,4 +7,5 @@ public class ConstantTable {
     public static final String TRANSACTION_TABLE="m_transaction";
     public static final String TRANSACTION_DETAIL_TABLE="m_transaction_detail";
     public static final String TRANSACTION_TYPE_TABLE="m_trans_type";
+    public static final String USER_ACCOUNT_TABLE = "m_user_account";
 }

@@ -3,6 +3,7 @@ package com.enigma.wmb_api.controller;
 import com.enigma.wmb_api.dto.response.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +52,14 @@ public class ErrorController {
             httpStatus=HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return ResponseEntity.status(httpStatus).body(builder.build());
+    }
+    @ExceptionHandler({PropertyReferenceException.class})
+    public ResponseEntity<?> getPropertyReferenceException(PropertyReferenceException exception){
+        CommonResponse<?> response=CommonResponse.builder()
+                .message("property does not exist")
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 //    @ExceptionHandler({RuntimeException.class})
