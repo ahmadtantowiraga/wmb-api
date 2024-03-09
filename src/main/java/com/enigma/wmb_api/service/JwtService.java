@@ -4,7 +4,7 @@ import com.enigma.wmb_api.dto.response.JwtClaims;
 import com.enigma.wmb_api.entity.UserAccount;
 
 public interface JwtService {
-    String generateToken();
+    String generateToken(UserAccount account);
     boolean verifyJwtToken(String token);
     JwtClaims getClaimsByToken(String token);
 }
