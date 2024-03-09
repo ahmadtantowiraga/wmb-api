@@ -15,6 +15,10 @@ import com.enigma.wmb_api.service.RoleService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserAccountRepository userAccountRepository;
     private final CustomerService customerService;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Value("${USERNAME_SUPER_ADMIN:superadmin}")
     private String usernameSuperAdmin;
@@ -103,9 +108,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(AuthRequest request) {
-        String token= jwtService.generateToken(new UserAccount());
+        Authentication authentication=new UsernamePasswordAuthenticationToken(
+                request.getUsername(),
+                request.getPassword()
+        );
+        Authentication authenticate = authenticationManager.authenticate(authentication);
+        UserAccount userAccount =(UserAccount) authenticate.getPrincipal();
+        String token= jwtService.generateToken(userAccount);
         return LoginResponse.builder()
+                .username(userAccount.getUsername())
                 .token(token)
+                .role(userAccount.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .build();
     }
 }
