@@ -65,12 +65,16 @@ public class MenuServiceImpl implements MenuService {
         Menu currentMenu=findById(request.getId());
        currentMenu.setMenuName(request.getMenuName());
        currentMenu.setPrice(request.getPrice());
-       if (request.getImage()!=null && !request.getImage().isEmpty()){
+       if (request.getImage()!=null && !request.getImage().isEmpty() && currentMenu.getImage()!=null){
            String id=currentMenu.getImage().getId();
            Image image=imageService.create(request.getImage());
            currentMenu.setImage(image);
            menuRepository.saveAndFlush(currentMenu);
            imageService.deleteById(id);
+       }else if (request.getImage()!=null && !request.getImage().isEmpty()){
+           Image image=imageService.create(request.getImage());
+           currentMenu.setImage(image);
+           menuRepository.saveAndFlush(currentMenu);
        }else{
            currentMenu.setImage(currentMenu.getImage());
            menuRepository.saveAndFlush(currentMenu);

@@ -51,7 +51,7 @@ public class ImageServiceImpl implements ImageService {
             Path filePath=directoryPath.resolve(uniqueFileName);
             Files.copy(multipartFile.getInputStream(), filePath);
             Image image=Image.builder()
-                    .name(multipartFile.getName())
+                    .name(multipartFile.getOriginalFilename())
                     .contentType(multipartFile.getContentType())
                     .size(multipartFile.getSize())
                     .path(filePath.toString())
