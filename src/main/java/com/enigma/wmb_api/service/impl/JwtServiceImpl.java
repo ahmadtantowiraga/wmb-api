@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
@@ -44,6 +45,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean verifyJwtToken(String bearerToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC512(JWT_SECRET);
@@ -59,6 +61,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public JwtClaims getClaimsByToken(String bearerToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC512(JWT_SECRET);

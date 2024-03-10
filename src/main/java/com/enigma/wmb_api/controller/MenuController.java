@@ -85,7 +85,6 @@ public class MenuController {
                     .build();
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e){
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
         }
 

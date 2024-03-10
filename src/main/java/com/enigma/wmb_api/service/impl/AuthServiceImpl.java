@@ -107,6 +107,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LoginResponse login(AuthRequest request) {
         Authentication authentication=new UsernamePasswordAuthenticationToken(
                 request.getUsername(),

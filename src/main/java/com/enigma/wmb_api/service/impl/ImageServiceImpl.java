@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,6 +43,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Image create(MultipartFile multipartFile) {
         try{
             if(!List.of("image/jpeg", "image/png", "image/jpg").contains(multipartFile.getContentType())){
@@ -65,6 +67,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Resource getById(String id) {
         try{
             Image image=imageRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "file not found"));
@@ -77,6 +80,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
         try {
             Image image = imageRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "file not found"));

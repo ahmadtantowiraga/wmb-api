@@ -22,4 +22,5 @@ public class TransactionResponse {
     private String tableName;
     private String transactionType;
     private List<TransactionDetailResponse> transactionDetailResponse;
+    private PaymentResponse paymentResponse;
 }

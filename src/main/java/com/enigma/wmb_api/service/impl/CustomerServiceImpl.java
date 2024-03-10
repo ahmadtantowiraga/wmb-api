@@ -57,6 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Customer findById(String id) {
         return customerRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer not Found"));
     }
@@ -82,7 +83,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @PostAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Transactional(rollbackFor = Exception.class)
     public Page<Customer> findAll(SearchCustomerRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
