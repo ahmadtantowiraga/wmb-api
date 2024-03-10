@@ -20,11 +20,11 @@ import java.time.Instant;
 @Service
 @Slf4j
 public class JwtServiceImpl implements JwtService {
-    @Value("${JWT_SECRET:MTIzNDU2Nzg=}")
+    @Value("${wmb.jwt.secret_key}")
     private String JWT_SECRET;
-    @Value("WMB")
+    @Value("${wmb.jwt.issuer}")
     private String ISSUER;
-    @Value("${JWT_EXPIRATION:900}")
+    @Value("${wmv.jwt.expirationInSecond}")
     private long JWT_EXPIRATION;
     @Override
     public String generateToken(UserAccount account) {

@@ -36,10 +36,10 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @Value("${USERNAME_SUPER_ADMIN:superadmin}")
+    @Value("${wmb.username.superadmin}")
     private String usernameSuperAdmin;
 
-    @Value("${PASSWORD_SUPER_ADMIN:password}")
+    @Value("${wmb.password.superadmin}")
     private String passwordSuperAdmin;
 
     @Transactional(rollbackFor = Exception.class)
