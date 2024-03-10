@@ -20,4 +20,8 @@ public class Menu {
 
     @Column(name="price", nullable = false, columnDefinition = "BIGINT CHECK (price >= 0)")
     private Long price;
+
+    @JoinColumn(name = "image_id", unique = true)
+    @OneToOne
+    private Image image;
 }
