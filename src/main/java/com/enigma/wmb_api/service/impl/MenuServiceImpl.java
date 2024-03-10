@@ -1,8 +1,10 @@
 package com.enigma.wmb_api.service.impl;
 
+import com.enigma.wmb_api.constant.APIUrl;
 import com.enigma.wmb_api.dto.request.menu_request.NewMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.SearchMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.UpdateMenuRequest;
+import com.enigma.wmb_api.dto.response.ImageResponse;
 import com.enigma.wmb_api.dto.response.MenuResponse;
 import com.enigma.wmb_api.entity.Image;
 import com.enigma.wmb_api.entity.Menu;
@@ -60,20 +62,28 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     public MenuResponse update(UpdateMenuRequest request) {
         validationUtil.validate(request);
-        findById(request.getId());
-        Menu menu= Menu.builder()
-                .id(request.getId())
-                .menuName(request.getMenuName())
-                .price(request.getPrice())
-                .build();
-        return convertMenuToMenuResponse(menuRepository.saveAndFlush(menu));
+        Menu currentMenu=findById(request.getId());
+       currentMenu.setMenuName(request.getMenuName());
+       currentMenu.setPrice(request.getPrice());
+       if (request.getImage()!=null && !request.getImage().isEmpty()){
+           String id=currentMenu.getImage().getId();
+           Image image=imageService.create(request.getImage());
+           currentMenu.setImage(image);
+           menuRepository.saveAndFlush(currentMenu);
+           imageService.deleteById(id);
+       }else{
+           currentMenu.setImage(currentMenu.getImage());
+           menuRepository.saveAndFlush(currentMenu);
+       }
+        return convertMenuToMenuResponse(currentMenu);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        findById(id);
+        Menu menu=findById(id);
         menuRepository.deleteById(id);
+        imageService.deleteById(menu.getImage().getId());
     }
 
     @Override
@@ -90,7 +100,10 @@ public class MenuServiceImpl implements MenuService {
                 .id(menu.getId())
                 .menuName(menu.getMenuName())
                 .price(menu.getPrice())
-                .
+                .imageResponse(ImageResponse.builder()
+                        .name(menu.getImage().getName())
+                        .url(APIUrl.IMAGE_API+"/"+menu.getImage().getId())
+                        .build())
                 .build();
     }
 }
