@@ -4,11 +4,14 @@ import com.enigma.wmb_api.dto.request.menu_request.NewMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.SearchMenuRequest;
 import com.enigma.wmb_api.dto.request.menu_request.UpdateMenuRequest;
 import com.enigma.wmb_api.dto.response.MenuResponse;
+import com.enigma.wmb_api.entity.Image;
 import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.repository.MenuRepository;
+import com.enigma.wmb_api.service.ImageService;
 import com.enigma.wmb_api.service.MenuService;
 import com.enigma.wmb_api.spesification.MenuSpesification;
 import com.enigma.wmb_api.util.ValidationUtil;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,14 +29,18 @@ import java.util.List;
 public class MenuServiceImpl implements MenuService {
     private final MenuRepository menuRepository;
     private final ValidationUtil validationUtil;
+    private final ImageService imageService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MenuResponse create(NewMenuRequest request) {
         validationUtil.validate(request);
+        if (request.getImage().isEmpty()) throw new ConstraintViolationException("image is required", null);
+        Image image= imageService.create(request.getImage());
         Menu menu= Menu.builder()
                 .menuName(request.getMenuName())
                 .price(request.getPrice())
+                .image(image)
                 .build();
         return convertMenuToMenuResponse(menuRepository.saveAndFlush(menu));
     }
@@ -83,6 +90,7 @@ public class MenuServiceImpl implements MenuService {
                 .id(menu.getId())
                 .menuName(menu.getMenuName())
                 .price(menu.getPrice())
+                .
                 .build();
     }
 }
