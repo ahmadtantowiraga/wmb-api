@@ -2,6 +2,7 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.transaction_request.NewTransactionsRequest;
 import com.enigma.wmb_api.dto.request.transaction_request.SearchTransactionRequest;
+import com.enigma.wmb_api.dto.response.PaymentResponse;
 import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
 import com.enigma.wmb_api.dto.response.TransactionResponse;
 import com.enigma.wmb_api.entity.*;
@@ -35,6 +36,8 @@ public class TransactionServiceImpl implements TransactionService {
     private final TableService tableService;
     private final TransactionTypeService transactionTypeService;
     private final TransactionDetailService transactionDetailService;
+    private final PaymentService paymentService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public TransactionResponse create(NewTransactionsRequest request) {
@@ -60,8 +63,12 @@ public class TransactionServiceImpl implements TransactionService {
                             .menu(menu)
                             .build();
                 }).toList();
+
+
         List<TransactionDetail> transactionDetails=transactionDetailService.createBulk(transactionDetail);
         transaction1.setTransactionDetail(transactionDetails);
+        Payment payment = paymentService.createPayment(transaction1);
+        transaction.setPayment(payment);
         return convertTransacionToTransactionResponse(transaction1);
     }
 
@@ -86,12 +93,25 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAll(specification, pageable);
     }
     private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {
+        PaymentResponse paymentResponse;
+        if (transaction.getPayment() == null) {
+            paymentResponse=null;
+        }else{
+            Payment payment=transaction.getPayment();
+            paymentResponse = PaymentResponse.builder()
+                    .id(payment.getId())
+                    .token(payment.getToken())
+                    .redirectUrl(payment.getRedirectUrl())
+                    .transactionStatus(payment.getTransactionStatus())
+                    .build();
+        }
         return TransactionResponse.builder()
                 .transactionDetailResponse(transaction.getTransactionDetail()
                         .stream().map(this::convertTransacionDetailToTransactionDetailResponse).toList())
                 .customerName(transaction.getCustomer().getCustomerName())
                 .tableName(transaction.getTables().getTableName())
                 .date(transaction.getDate())
+                .paymentResponse(paymentResponse)
                 .id(transaction.getId())
                 .transactionType(transaction.getTransactionType().getId().name())
                 .build();
