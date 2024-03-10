@@ -96,14 +96,23 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.findAll(specification, pageable);
     }
     private MenuResponse convertMenuToMenuResponse(Menu menu) {
+        String name;
+        String url;
+        if (menu.getImage()==null){
+            name=null;
+            url=null;
+        }else{
+            name=menu.getImage().getName();
+            url=APIUrl.IMAGE_API+"/"+menu.getImage().getId();
+        }
         return MenuResponse.builder()
                 .id(menu.getId())
                 .menuName(menu.getMenuName())
-                .price(menu.getPrice())
                 .imageResponse(ImageResponse.builder()
-                        .name(menu.getImage().getName())
-                        .url(APIUrl.IMAGE_API+"/"+menu.getImage().getId())
+                        .name(name)
+                        .url(url)
                         .build())
+                .price(menu.getPrice())
                 .build();
     }
 }
