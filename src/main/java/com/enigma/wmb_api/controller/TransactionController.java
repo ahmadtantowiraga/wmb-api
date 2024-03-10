@@ -6,6 +6,7 @@ import com.enigma.wmb_api.dto.request.table_request.NewTableRequest;
 import com.enigma.wmb_api.dto.request.table_request.SearchTableRequest;
 import com.enigma.wmb_api.dto.request.transaction_request.NewTransactionsRequest;
 import com.enigma.wmb_api.dto.request.transaction_request.SearchTransactionRequest;
+import com.enigma.wmb_api.dto.request.transaction_request.UpdateTransactionStatusRequest;
 import com.enigma.wmb_api.dto.response.*;
 import com.enigma.wmb_api.entity.Payment;
 import com.enigma.wmb_api.entity.Transaction;
@@ -21,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -89,6 +91,20 @@ public class TransactionController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/status")
+    public ResponseEntity<CommonResponse<?>> updateStatus(@RequestBody Map<String, Object> request){
+        UpdateTransactionStatusRequest updateTransactionStatusRequest= UpdateTransactionStatusRequest.builder()
+                .orderId(request.get("order_id").toString())
+                .transactionStatus(request.get("transaction_status").toString())
+                .build();
+        transactionService.updateStatus(updateTransactionStatusRequest);
+        return ResponseEntity.ok(CommonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Update data is success")
+                .build());
+    }
+
     private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {
         PaymentResponse paymentResponse;
         if (transaction.getPayment() == null) {

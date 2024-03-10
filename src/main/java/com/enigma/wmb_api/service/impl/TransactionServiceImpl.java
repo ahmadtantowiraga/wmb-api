@@ -2,6 +2,7 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.transaction_request.NewTransactionsRequest;
 import com.enigma.wmb_api.dto.request.transaction_request.SearchTransactionRequest;
+import com.enigma.wmb_api.dto.request.transaction_request.UpdateTransactionStatusRequest;
 import com.enigma.wmb_api.dto.response.PaymentResponse;
 import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
 import com.enigma.wmb_api.dto.response.TransactionResponse;
@@ -92,6 +93,16 @@ public class TransactionServiceImpl implements TransactionService {
         Specification<Transaction> specification= TransactionSpesification.getSpesification(request);
         return transactionRepository.findAll(specification, pageable);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateStatus(UpdateTransactionStatusRequest request) {
+        Transaction transaction=transactionRepository.findById(request.getOrderId())
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
+        Payment payment=transaction.getPayment();
+        payment.setTransactionStatus(request.getTransactionStatus());
+    }
+
     private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {
         PaymentResponse paymentResponse;
         if (transaction.getPayment() == null) {
