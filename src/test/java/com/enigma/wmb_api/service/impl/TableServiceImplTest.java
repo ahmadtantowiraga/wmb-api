@@ -40,7 +40,7 @@ class TableServiceImplTest {
     }
 
     @Test
-    void shouldReturnMenuWhenCreate() {
+    void shouldReturnTableWhenCreate() {
         NewTableRequest table = NewTableRequest.builder().tableName("table").build();
         Tables tableNew = Tables.builder().id("id").tableName("table").build();
         Mockito.doNothing().when(validationUtil).validate(table);
@@ -51,7 +51,7 @@ class TableServiceImplTest {
     }
 
     @Test
-    void findOneById() {
+    void shouldReturnTableWhenFindOneById() {
         String id="id";
         Tables tableNew = Tables.builder().id("id").tableName("table").build();
         Mockito.when(tableRepository.findById(id))
@@ -61,7 +61,7 @@ class TableServiceImplTest {
     }
 
     @Test
-    void update() {
+    void shouldReturnTableWhenUpdate() {
         UpdateTableRequest request = UpdateTableRequest.builder().tableName("table").id("id").build();
         Mockito.doNothing().when(validationUtil).validate(request);
         Tables tableNew = Tables.builder().id("id").tableName("table").build();
@@ -74,7 +74,7 @@ class TableServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void shouldReturnTableWhenDelete() {
         String id="id";
         Tables tableNew = Tables.builder().id("id").tableName("table").build();
         Mockito.when(tableRepository.findById(id))
@@ -85,7 +85,7 @@ class TableServiceImplTest {
     }
 
     @Test
-    void findAll() {
+    void shouldReturnTableWhenFindAll() {
         SearchTableRequest request = SearchTableRequest.builder().tableName("table").page(1).size(10)
                 .sortBy("id").direction("asc").build();
         List<Tables> tablesList=List.of(Tables.builder().id("id").tableName("table").build());
