@@ -74,9 +74,4 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRespository.saveAndFlush(payment);
         return payment;
     }
-
-    @Override
-    public void checkFailedAndUpdatePayments() {
-
-    }
 }
