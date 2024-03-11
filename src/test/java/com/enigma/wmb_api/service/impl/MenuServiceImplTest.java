@@ -88,7 +88,7 @@ class MenuServiceImplTest {
     }
 
     @Test
-    void update() {
+    void shouldReturnCustomerWhenUpdate() {
         MultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "Test file content".getBytes());
         UpdateMenuRequest updateMenuRequest = UpdateMenuRequest.builder().menuName("ahmad").id("id").image(image).price(2000L).build();
         Menu menu = Menu.builder().menuName("ahmad").build();
