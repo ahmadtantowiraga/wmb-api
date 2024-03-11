@@ -69,7 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<TransactionDetail> transactionDetails=transactionDetailService.createBulk(transactionDetail);
         transaction1.setTransactionDetail(transactionDetails);
         Payment payment = paymentService.createPayment(transaction1);
-        transaction.setPayment(payment);
+        transaction1.setPayment(payment);
         return convertTransacionToTransactionResponse(transaction1);
     }
 
