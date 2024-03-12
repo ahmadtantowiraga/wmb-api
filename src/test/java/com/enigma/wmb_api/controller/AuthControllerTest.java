@@ -87,7 +87,7 @@ class AuthControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseWhenLogin() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseWhenLogin() throws Exception {
         AuthRequest authRequest = AuthRequest.builder().username("user").password("password").build();
         LoginResponse response = LoginResponse.builder().token("token").role(List.of("CUSTOMER")).username("user").build();
         String stringJson=objectMapper.writeValueAsString(authRequest);
