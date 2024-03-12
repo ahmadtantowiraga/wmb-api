@@ -12,6 +12,7 @@ import com.enigma.wmb_api.repository.TransactionRepository;
 import com.enigma.wmb_api.service.*;
 import com.enigma.wmb_api.spesification.TableSpesification;
 import com.enigma.wmb_api.spesification.TransactionSpesification;
+import com.enigma.wmb_api.util.CsvGeneratorUtil;
 import com.enigma.wmb_api.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -101,6 +102,11 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
         Payment payment=transaction.getPayment();
         payment.setTransactionStatus(request.getTransactionStatus());
+    }
+
+    @Override
+    public List<Transaction> findAllList() {
+        return transactionRepository.findAll();
     }
 
     private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {

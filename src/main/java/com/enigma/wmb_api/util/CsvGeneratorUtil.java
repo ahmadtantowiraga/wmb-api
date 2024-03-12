@@ -16,16 +16,19 @@ public class CsvGeneratorUtil {
         csvContent.append(CSV_HEADER);
         for (Transaction transaction: transactionList){
             for (TransactionDetail transactionDetail: transaction.getTransactionDetail()){
+                String paymentStatus=transaction.getPayment()==null ? null : transaction.getPayment().getTransactionStatus();
+                String tableId=transaction.getTables()==null ? null : transaction.getTables().getId();
+
                 csvContent.append(transaction.getId()).append(",")
                         .append(transaction.getDate()).append(",")
                         .append(transaction.getCustomer().getId()).append(",")
-                        .append(transaction.getTables().getId()).append(",")
+                        .append(tableId).append(",")
                         .append(transaction.getTransactionType().getId()).append(",")
                         .append(transactionDetail.getId()).append(",")
                         .append(transactionDetail.getMenu().getId()).append(",")
                         .append(transactionDetail.getQty()).append(",")
                         .append(transactionDetail.getPrice()).append(",")
-                        .append(transaction.getPayment().getTransactionStatus()).append(",");
+                        .append(paymentStatus).append("\n");
             }
         }
         return csvContent.toString();

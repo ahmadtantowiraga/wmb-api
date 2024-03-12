@@ -13,8 +13,10 @@ import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.service.TransactionService;
+import com.enigma.wmb_api.util.CsvGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import java.util.Map;
 @RequestMapping(path= APIUrl.TRANSACTION_API)
 public class TransactionController {
     private final TransactionService transactionService;
+    private final CsvGeneratorUtil csvGeneratorUtil;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommonResponse<TransactionResponse>> create(@RequestBody NewTransactionsRequest request){
@@ -104,6 +107,18 @@ public class TransactionController {
                 .message("Update data is success")
                 .build());
     }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
+    @GetMapping(path = "/csv")
+    public ResponseEntity<byte[]> generateCsv(){
+        List<Transaction> transactions=transactionService.findAllList();
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "transactions.csv");
+        byte[] csvBytes= csvGeneratorUtil.generateCsv(transactions).getBytes();
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
+    }
+
 
     private TransactionResponse convertTransacionToTransactionResponse(Transaction transaction) {
         PaymentResponse paymentResponse;
