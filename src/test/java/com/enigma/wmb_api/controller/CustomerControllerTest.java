@@ -46,7 +46,7 @@ class CustomerControllerTest {
     private ObjectMapper objectMapper;
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void getAllCustomer() throws Exception {
+    void shouldHave201StatusAndReturnCommonResponseWhenFindByIdUpdateGetAllCustomer() throws Exception {
         SearchCustomerRequest searchCustomerRequest = SearchCustomerRequest.builder().build();
         List<Customer> customerList=List.of(Customer.builder().status(true).customerName("ahmad").id("id")
                 .status(true).userAccount(UserAccount.builder().build()).build());
