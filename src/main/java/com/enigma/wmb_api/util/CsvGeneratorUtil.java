@@ -1,0 +1,33 @@
+package com.enigma.wmb_api.util;
+
+import com.enigma.wmb_api.dto.response.TransactionResponse;
+import com.enigma.wmb_api.entity.Transaction;
+import com.enigma.wmb_api.entity.TransactionDetail;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class CsvGeneratorUtil {
+    private static final String CSV_HEADER="TransactionId, Date, CustomerId, TableId, TransactionTypeId, TransactionDetailId, MenuId, qty, price, PaymentStatus\n";
+
+    public String generateCsv(List<Transaction> transactionList){
+        StringBuilder csvContent=new StringBuilder();
+        csvContent.append(CSV_HEADER);
+        for (Transaction transaction: transactionList){
+            for (TransactionDetail transactionDetail: transaction.getTransactionDetail()){
+                csvContent.append(transaction.getId()).append(",")
+                        .append(transaction.getDate()).append(",")
+                        .append(transaction.getCustomer().getId()).append(",")
+                        .append(transaction.getTables().getId()).append(",")
+                        .append(transaction.getTransactionType().getId()).append(",")
+                        .append(transactionDetail.getId()).append(",")
+                        .append(transactionDetail.getMenu().getId()).append(",")
+                        .append(transactionDetail.getQty()).append(",")
+                        .append(transactionDetail.getPrice()).append(",")
+                        .append(transaction.getPayment().getTransactionStatus()).append(",");
+            }
+        }
+        return csvContent.toString();
+    }
+}
