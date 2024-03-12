@@ -73,7 +73,7 @@ class MenuControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseWhenFindById() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseWhenFindById() throws Exception {
         String id="id";
         MenuResponse menuResponse = MenuResponse.builder().menuName("menu").build();
         Mockito.when(menuService.findOneById(Mockito.any()))
@@ -109,7 +109,7 @@ class MenuControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseDeleteById() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseDeleteById() throws Exception {
         Mockito.doNothing().when(menuService).deleteById(Mockito.any());
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/menus/id"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -124,7 +124,7 @@ class MenuControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseFindAll() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseFindAll() throws Exception {
         List<Menu> menuList=List.of(Menu.builder().menuName("ahmad").id("id").price(2000L).build());
         Pageable pageable= PageRequest.of(1, 10);
         Page<Menu> menuPage=new PageImpl<>(menuList, pageable, menuList.size());

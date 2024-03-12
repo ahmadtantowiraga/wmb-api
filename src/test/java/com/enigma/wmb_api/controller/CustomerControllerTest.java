@@ -46,7 +46,7 @@ class CustomerControllerTest {
     private ObjectMapper objectMapper;
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseWhenFindByIdUpdateGetAllCustomer() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseWhenFindByIdUpdateGetAllCustomer() throws Exception {
         SearchCustomerRequest searchCustomerRequest = SearchCustomerRequest.builder().build();
         List<Customer> customerList=List.of(Customer.builder().status(true).customerName("ahmad").id("id")
                 .status(true).userAccount(UserAccount.builder().build()).build());
@@ -73,7 +73,7 @@ class CustomerControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseWhenFindByIdUpdateCustomer() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseWhenFindByIdUpdateCustomer() throws Exception {
         CustomerResponse responseData = CustomerResponse.builder().id("id").customerName("name").build();
         UpdateCustomerRequest updateCustomerRequest = UpdateCustomerRequest.builder().build();
         Mockito.when(customerService.update(Mockito.any()))
@@ -96,7 +96,7 @@ class CustomerControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseWhenFindById() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseWhenFindById() throws Exception {
         CustomerResponse responseData = CustomerResponse.builder().customerName("name").id("id").build();
         Mockito.when(customerService.findOneById(Mockito.any()))
                 .thenReturn(responseData);
@@ -116,7 +116,7 @@ class CustomerControllerTest {
 
     @Test
     @WithMockUser(username = "USER", roles = "SUPER_ADMIN")
-    void shouldHave201StatusAndReturnCommonResponseWhenDeleteById() throws Exception {
+    void shouldHave200StatusAndReturnCommonResponseWhenDeleteById() throws Exception {
         String id="id";
         Mockito.doNothing().when(customerService).deleteById(id);
 
