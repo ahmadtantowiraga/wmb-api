@@ -28,7 +28,6 @@ public class CustomerServiceImpl implements CustomerService {
     private final ValidationUtil validationUtil;
     private final UserAccountService userAccountService;
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Customer create(Customer customer) {

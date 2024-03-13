@@ -16,7 +16,6 @@ public class CustomerSpesification {
                 Predicate predicate=cb.like(cb.lower(root.get("customerName")), "%"+request.getCustomerName().toLowerCase()+"%");
                 predicates.add(predicate);
             }
-
             if (request.getMobilePhoneNo() != null){
                 Predicate predicate=cb.like(cb.lower(root.get("mobilePhoneNo")), "%"+request.getMobilePhoneNo().toLowerCase()+"%");
                 predicates.add(predicate);

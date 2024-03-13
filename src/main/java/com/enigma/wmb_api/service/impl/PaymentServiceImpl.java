@@ -50,7 +50,6 @@ public class PaymentServiceImpl implements PaymentService {
                         .quantity(transactionDetail.getQty())
                         .build()).toList();
 
-
         PaymentRequest request=PaymentRequest.builder()
                 .paymentDetail(PaymentDetailRequest.builder()
                         .orderId(transaction.getId())

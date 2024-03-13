@@ -3,9 +3,7 @@ package com.enigma.wmb_api.service.impl;
 import com.enigma.wmb_api.dto.request.table_request.NewTableRequest;
 import com.enigma.wmb_api.dto.request.table_request.SearchTableRequest;
 import com.enigma.wmb_api.dto.request.table_request.UpdateTableRequest;
-import com.enigma.wmb_api.dto.response.MenuResponse;
 import com.enigma.wmb_api.dto.response.TableResponse;
-import com.enigma.wmb_api.entity.Menu;
 import com.enigma.wmb_api.entity.Tables;
 import com.enigma.wmb_api.repository.TableRepository;
 import com.enigma.wmb_api.service.TableService;
@@ -77,6 +75,7 @@ public class TableServiceImpl implements TableService {
         Specification<Tables> specification= TableSpesification.getSpesification(request);
         return tableRepository.findAll(specification, pageable);
     }
+
     private TableResponse convertTableToTableResponse(Tables table) {
         return TableResponse.builder()
                 .id(table.getId())

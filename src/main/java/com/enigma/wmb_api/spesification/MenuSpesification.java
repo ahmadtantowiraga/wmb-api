@@ -16,7 +16,6 @@ public class MenuSpesification {
                 Predicate predicate=cb.like(cb.lower(root.get("menuName")), "%"+request.getName().toLowerCase()+"%");
                 predicates.add(predicate);
             }
-
             if (request.getPrice() != null){
                 Predicate predicate=cb.equal(root.get("price"), request.getPrice());
                 predicates.add(predicate);

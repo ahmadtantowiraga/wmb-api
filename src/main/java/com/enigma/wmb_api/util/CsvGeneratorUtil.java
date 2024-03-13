@@ -18,7 +18,6 @@ public class CsvGeneratorUtil {
             for (TransactionDetail transactionDetail: transaction.getTransactionDetail()){
                 String paymentStatus=transaction.getPayment()==null ? null : transaction.getPayment().getTransactionStatus();
                 String tableId=transaction.getTables()==null ? null : transaction.getTables().getId();
-
                 csvContent.append(transaction.getId()).append(",")
                         .append(transaction.getDate()).append(",")
                         .append(transaction.getCustomer().getId()).append(",")

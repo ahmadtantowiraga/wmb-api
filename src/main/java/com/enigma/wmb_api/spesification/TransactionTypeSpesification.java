@@ -18,7 +18,6 @@ public class TransactionTypeSpesification {
                 Predicate predicate=cb.like(cb.lower(root.get("description")), "%"+request.getDescription().toLowerCase()+"%");
                 predicates.add(predicate);
             }
-
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
     }

@@ -59,6 +59,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         userAccountRepository.save(account);
     }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RegisterResponse register(AuthRequest request) {

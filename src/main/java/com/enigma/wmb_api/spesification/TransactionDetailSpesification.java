@@ -28,7 +28,6 @@ public class TransactionDetailSpesification {
                 Predicate predicate=cb.equal(root.get("price"), request.getPrice());
                 predicates.add(predicate);
             }
-
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
     }

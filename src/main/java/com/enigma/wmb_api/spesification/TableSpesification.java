@@ -16,7 +16,6 @@ public class TableSpesification {
                 Predicate predicate=cb.like(cb.lower(root.get("tableName")), "%"+request.getTableName().toLowerCase()+"%");
                 predicates.add(predicate);
             }
-
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
     }
