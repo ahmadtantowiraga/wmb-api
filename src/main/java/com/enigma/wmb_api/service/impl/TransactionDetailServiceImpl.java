@@ -2,7 +2,6 @@ package com.enigma.wmb_api.service.impl;
 
 import com.enigma.wmb_api.dto.request.Transaction_detail_request.SearchTransactionDetailRequest;
 import com.enigma.wmb_api.dto.response.TransactionDetailResponse;
-import com.enigma.wmb_api.entity.Transaction;
 import com.enigma.wmb_api.entity.TransactionDetail;
 import com.enigma.wmb_api.repository.TransactionDetailRepository;
 import com.enigma.wmb_api.service.TransactionDetailService;
@@ -22,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
-public class TransactionDetailServiceDetailImpl implements TransactionDetailService {
+public class TransactionDetailServiceImpl implements TransactionDetailService {
     private final TransactionDetailRepository transactionDetailRepository;
     private final ValidationUtil validationUtil;
     @Override
